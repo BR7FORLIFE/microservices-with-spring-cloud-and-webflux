@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: 01-WebFlux
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/webfluxmicroservice
+    username: postgres
+    password: 
