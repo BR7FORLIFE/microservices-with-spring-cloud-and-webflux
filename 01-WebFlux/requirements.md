@@ -28,7 +28,7 @@
  - Spring Data R2DBC (Postgres R2DBC driver)
  - Reactor (Mono / Flux)
  - Kafka para eventos (consumer/producer reactivo)
- - Redis (cache, rate-limiting) opcional
+ - Redis (cache, rate-limiting) opcional3
  - Testcontainers para pruebas de integración
  - OpenTelemetry + Micrometer → Prometheus/Grafana para observabilidad
 
