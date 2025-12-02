@@ -19,7 +19,7 @@ import org.springframework.security.web.server.context.NoOpServerSecurityContext
 public class SecurityConfig {
 
     private final String[] PUBLIC_PATHS = { "/api/auth/**" };
-
+    
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, AuthenticationWebFilter jwtAuthFilter)
             throws Exception {
