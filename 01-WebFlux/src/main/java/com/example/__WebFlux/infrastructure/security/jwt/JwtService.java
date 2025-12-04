@@ -32,12 +32,12 @@ public class JwtService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private RSAPrivateKey privateKey;
+    private RSAPrivateKey privateKey; // <- firmar JWT
 
     @Autowired
-    private RSAPublicKey publicKey;
+    private RSAPublicKey publicKey; // <- validar JWT
 
-    private String issuer = "";
+    private String issuer = "BR7FORLIFE.com"; // el dueño o el dominio que emite el token
     private Integer accessTokenSeconds = 60 * 60 * 60;
 
     public JwtService(KeyPair keyPair) {
