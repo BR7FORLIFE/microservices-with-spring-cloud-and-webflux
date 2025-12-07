@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.nimbusds.jose.JOSEException;
@@ -27,9 +26,6 @@ import reactor.core.scheduler.Schedulers;
 
 @Service
 public class JwtService {
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private RSAPrivateKey privateKey; // <- firmar JWT
@@ -63,7 +59,7 @@ public class JwtService {
             // Payload del token -> Nimbus JOSE
             JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
                     .issuer(this.issuer)
-                    .subject(passwordEncoder.encode(userDetails.getUsername()))
+                    .subject(userDetails.getUsername())
                     .issueTime(currentDate)
                     .expirationTime(expirationDate)
                     .claim("ROLS", userDetails.getAuthorities())
