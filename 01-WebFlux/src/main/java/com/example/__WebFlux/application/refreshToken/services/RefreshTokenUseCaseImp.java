@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import com.example.__WebFlux.application.refreshToken.usecases.RefreshTokenUseCase;
 import com.example.__WebFlux.domain.refreshToken.models.RefreshTokenModel;
-import com.example.__WebFlux.domain.refreshToken.ports.RefreshTokenDomainRepository;
+import com.example.__WebFlux.domain.refreshToken.ports.RefreshTokenDomainRepositoryPort;
 import com.nimbusds.jose.util.StandardCharset;
 
 import reactor.core.publisher.Mono;
@@ -19,12 +19,12 @@ import reactor.util.function.Tuples;
 
 public class RefreshTokenUseCaseImp implements RefreshTokenUseCase {
 
-    private final RefreshTokenDomainRepository repository; // <-- puerto del dominio de la feature RefreshToken
+    private final RefreshTokenDomainRepositoryPort repository; // <-- puerto del dominio de la feature RefreshToken
     private final Duration ttlDuration; // <-- representa una cantidad de tiempo ej: 5 Min, 30 Days, 90 seconds
     private final SecureRandom secureRandom = new SecureRandom(); // <- generador de numeros aleatorios con gran
                                                                   // entropia
 
-    public RefreshTokenUseCaseImp(RefreshTokenDomainRepository repo, Duration duration) {
+    public RefreshTokenUseCaseImp(RefreshTokenDomainRepositoryPort repo, Duration duration) {
         this.repository = repo;
         this.ttlDuration = duration;
     }
