@@ -2,6 +2,7 @@ package com.example.__WebFlux.domain.refreshToken.ports;
 
 import com.example.__WebFlux.domain.refreshToken.models.RefreshTokenModel;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface RefreshTokenDomainRepositoryPort {
@@ -10,7 +11,7 @@ public interface RefreshTokenDomainRepositoryPort {
 
     Mono<RefreshTokenModel> findById(String id);
 
-    Mono<RefreshTokenModel> findByUserIdAndNotRevoked(String userId);
+    Flux<RefreshTokenModel> findByUserIdAndNotRevoked(String userId);
 
     Mono<RefreshTokenModel> save(RefreshTokenModel token);
 }
