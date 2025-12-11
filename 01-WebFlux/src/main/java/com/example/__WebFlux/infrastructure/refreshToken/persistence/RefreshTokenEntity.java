@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import lombok.Data;
 
-@Table
+@Table(name = "refresh_token")
 @Data
 public class RefreshTokenEntity {
     @Id
@@ -26,5 +26,6 @@ public class RefreshTokenEntity {
     @Column("create_at")
     private Instant createAt;
 
+    @Column("revoked")
     private boolean revoked;
 }
