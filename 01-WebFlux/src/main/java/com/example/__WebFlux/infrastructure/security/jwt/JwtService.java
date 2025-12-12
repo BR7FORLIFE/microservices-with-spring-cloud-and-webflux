@@ -91,7 +91,7 @@ public class JwtService {
      * 3. JWT ID (para hacer revocaciones)
      */
 
-    public Mono<JWTClaimsSet> validateAccessToken(String token) throws JOSEException {
+    public Mono<JWTClaimsSet> validateAccessToken(String token) {
         return Mono.fromCallable(() -> {
             // parseamos el token en sus 3 partes (header, payload, signature)
             SignedJWT signedJWT = SignedJWT.parse(token);
