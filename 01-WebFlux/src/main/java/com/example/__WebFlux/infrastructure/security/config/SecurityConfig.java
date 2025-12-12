@@ -14,12 +14,21 @@ import org.springframework.security.web.server.authentication.AuthenticationWebF
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 
+import com.example.__WebFlux.infrastructure.security.JwtReactiveAuthenticationManager;
+import com.example.__WebFlux.infrastructure.security.jwt.JwtService;
+
 @Configuration
 @EnableReactiveMethodSecurity()
 public class SecurityConfig {
 
+    private final JwtService jwtService;
+
     private final String[] PUBLIC_PATHS = { "/api/auth/**" };
-    
+
+    public SecurityConfig(JwtService jwtService) {
+        this.jwtService = jwtService;
+    }
+
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, AuthenticationWebFilter jwtAuthFilter)
             throws Exception {
@@ -47,7 +56,7 @@ public class SecurityConfig {
     public ReactiveAuthenticationManager reactiveAuthenticationManager(
             ReactiveUserDetailsService reactiveUserDetailsService,
             PasswordEncoder passwordEncoder) throws Exception {
-        return null;
+        return new JwtReactiveAuthenticationManager(jwtService);
     }
 
     @Bean
