@@ -1,12 +1,14 @@
 package com.example.__WebFlux.infrastructure.security;
 
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-public class CustomUserDetailsService implements UserDetailsService{
+import reactor.core.publisher.Mono;
+
+public class CustomUserDetailsService implements ReactiveUserDetailsService{
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public Mono<UserDetails> findByUsername(String username) {
         return null;
     }
 }
