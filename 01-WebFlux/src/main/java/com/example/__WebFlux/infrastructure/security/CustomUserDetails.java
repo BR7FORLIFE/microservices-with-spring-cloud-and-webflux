@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.__WebFlux.infrastructure.security.models.UserModel;
+import com.example.__WebFlux.infrastructure.security.persistence.UserModel;
 
 public class CustomUserDetails implements UserDetails {
 
