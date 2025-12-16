@@ -51,7 +51,7 @@ public class SecurityConfig {
         filter.setSecurityContextRepository(NoOpServerSecurityContextRepository.getInstance());
         return filter;
     }
-
+    
     @Bean
     public ReactiveAuthenticationManager reactiveAuthenticationManager(
             ReactiveUserDetailsService reactiveUserDetailsService,
