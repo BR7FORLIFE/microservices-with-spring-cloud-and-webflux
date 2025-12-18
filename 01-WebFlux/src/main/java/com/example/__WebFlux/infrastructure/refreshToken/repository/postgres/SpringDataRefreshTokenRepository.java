@@ -13,5 +13,5 @@ public interface SpringDataRefreshTokenRepository extends ReactiveCrudRepository
     @Query("SELECT * FROM refresh_token WHERE token_hash = :token")
     Mono<RefreshTokenEntity> findByTokenHash(String token);
 
-    Flux<RefreshTokenEntity> findByUserIdAndNotRevoked(String userId);
+   Flux<RefreshTokenEntity> findByUserIdAndRevokedIsFalse(String userId);
 }
