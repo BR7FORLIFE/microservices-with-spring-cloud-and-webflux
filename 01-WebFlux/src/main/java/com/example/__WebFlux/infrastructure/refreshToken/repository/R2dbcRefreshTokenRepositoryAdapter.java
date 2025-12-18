@@ -36,7 +36,7 @@ public class R2dbcRefreshTokenRepositoryAdapter implements RefreshTokenDomainRep
     @Override
     public Flux<RefreshTokenModel> findByUserIdAndNotRevoked(String userId) {
         return refreshTokenRepository
-                .findByUserIdAndNotRevoked(userId)
+                .findByUserIdAndRevokedIsFalse(userId)
                 .map(RefreshTokenMapper::toDomain);
     }
 
