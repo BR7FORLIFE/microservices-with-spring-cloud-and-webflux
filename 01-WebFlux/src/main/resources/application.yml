@@ -2,6 +2,17 @@ spring:
   application:
     name: 01-WebFlux
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/webfluxmicroservice
+    url: r2dbc:postgresql://localhost:5432/microservicedb
     username: postgres
-    password: 
+    password: 12345
+
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://localhost:5432/microservicedb 
+    user: postgres
+    password: 12345
+    locations:
+    - classpath:db/migration
+
+refresh-token:
+  ttl: 30d
