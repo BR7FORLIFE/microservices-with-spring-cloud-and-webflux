@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.__WebFlux.domain.user.models.UserModel;
+import com.example.__WebFlux.domain.user.models.UserModelDomain;
 
 public class CustomUserDetails implements UserDetails {
 
@@ -15,7 +15,7 @@ public class CustomUserDetails implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetails(UserModel userModel) {
+    public CustomUserDetails(UserModelDomain userModel) {
         this.userId = userModel.getId();
         this.username = userModel.getUsername();
         this.password = userModel.getPassword();
