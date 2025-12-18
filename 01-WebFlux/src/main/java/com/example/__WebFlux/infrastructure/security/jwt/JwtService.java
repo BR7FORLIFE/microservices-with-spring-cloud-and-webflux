@@ -27,11 +27,8 @@ import reactor.core.scheduler.Schedulers;
 @Service
 public class JwtService {
 
-    @Autowired
-    private RSAPrivateKey privateKey; // <- firmar JWT
-
-    @Autowired
-    private RSAPublicKey publicKey; // <- validar JWT
+    private final RSAPrivateKey privateKey; // <- firmar JWT
+    private final RSAPublicKey publicKey; // <- validar JWT
 
     private String issuer = "BR7FORLIFE.com"; // el dueño o el dominio que emite el token
     private Integer accessTokenSeconds = 60 * 60 * 60;
