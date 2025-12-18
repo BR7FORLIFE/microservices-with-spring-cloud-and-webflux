@@ -2,11 +2,13 @@ package com.example.__WebFlux.infrastructure.security;
 
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
 import com.example.__WebFlux.infrastructure.security.repository.R2dbcUserRepositoryAdapter;
 
 import reactor.core.publisher.Mono;
 
+@Service
 public class CustomReactiveUserDetailsService implements ReactiveUserDetailsService {
 
     private final R2dbcUserRepositoryAdapter r2dbcUserRepositoryAdapter;
