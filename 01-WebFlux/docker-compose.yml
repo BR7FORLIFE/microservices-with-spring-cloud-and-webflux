@@ -1,0 +1,39 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: microservicedb
+    environment:
+      POSTGRES_DB: microservicedb
+      POSTGRES_USER: br7forlife
+      POSTGRES_PASSWORD: 12345
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U br7forlife -d microservicedb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: .
+    container_name: webflux-container
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_R2DBC_URL: r2dbc:postgresql://postgres:5432/microservicedb
+      SPRING_R2DBC_USERNAME: br7forlife
+      SPRING_R2DBC_PASSWORD: 12345
+    networks:
+      - backend-net
+
+volumes:
+  pgdata:
+
+networks:
+  backend-net:
