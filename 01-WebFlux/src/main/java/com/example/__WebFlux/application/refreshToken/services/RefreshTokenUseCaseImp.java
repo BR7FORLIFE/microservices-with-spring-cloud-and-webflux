@@ -8,6 +8,9 @@ import java.util.Base64;
 import java.util.HexFormat;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import com.example.__WebFlux.application.refreshToken.usecases.RefreshTokenUseCase;
 import com.example.__WebFlux.domain.refreshToken.models.RefreshTokenModel;
 import com.example.__WebFlux.domain.refreshToken.ports.RefreshTokenDomainRepositoryPort;
@@ -17,6 +20,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import reactor.util.function.Tuples;
 
+@Service
 public class RefreshTokenUseCaseImp implements RefreshTokenUseCase {
 
     private final RefreshTokenDomainRepositoryPort repository; // <-- puerto del dominio de la feature RefreshToken
@@ -24,7 +28,8 @@ public class RefreshTokenUseCaseImp implements RefreshTokenUseCase {
     private final SecureRandom secureRandom = new SecureRandom(); // <- generador de numeros aleatorios con gran
                                                                   // entropia
 
-    public RefreshTokenUseCaseImp(RefreshTokenDomainRepositoryPort repo, Duration duration) {
+    public RefreshTokenUseCaseImp(RefreshTokenDomainRepositoryPort repo,
+            @Value("${refresh-token.ttl}") Duration duration) {
         this.repository = repo;
         this.ttlDuration = duration;
     }
