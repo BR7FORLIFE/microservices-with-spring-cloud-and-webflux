@@ -2,17 +2,17 @@ package com.example.__WebFlux.domain.user.models;
 
 import java.util.List;
 
-public class UserModel {
+public class UserModelDomain {
     private String id;
     private String username;
     private String email;
     private String password;
     private List<String> rols;
 
-    public UserModel() {
+    public UserModelDomain() {
     }
 
-    public UserModel(String id, String username, String email, String password, List<String> rols) {
+    public UserModelDomain(String id, String username, String email, String password, List<String> rols) {
         this.id = id;
         this.username = username;
         this.email = email;
