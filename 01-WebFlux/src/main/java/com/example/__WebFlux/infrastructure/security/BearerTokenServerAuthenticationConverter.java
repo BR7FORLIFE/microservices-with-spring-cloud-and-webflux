@@ -17,7 +17,7 @@ public class BearerTokenServerAuthenticationConverter implements ServerAuthentic
         return Mono.justOrEmpty(exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
                 .filter(header -> header.startsWith("Bearer "))
                 .map(header -> header.substring(7))
-                .map(token -> new UsernamePasswordAuthenticationToken(token, token));
+                .map(token -> new UsernamePasswordAuthenticationToken(null, token));
     }
 
 }
