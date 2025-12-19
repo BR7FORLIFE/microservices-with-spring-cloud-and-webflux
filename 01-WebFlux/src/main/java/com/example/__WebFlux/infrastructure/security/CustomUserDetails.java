@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.__WebFlux.domain.user.models.UserModelDomain;
+import com.example.__WebFlux.domain.auth.models.UserModelDomain;
 
 public class CustomUserDetails implements UserDetails {
 
@@ -19,7 +19,10 @@ public class CustomUserDetails implements UserDetails {
         this.userId = userModel.getId();
         this.username = userModel.getUsername();
         this.password = userModel.getPassword();
-        this.authorities = userModel.getRols().stream().map(SimpleGrantedAuthority::new).toList();
+        this.authorities = userModel.getRols()
+                .stream()
+                .map(rol -> new SimpleGrantedAuthority("ROLE_" + rol.name()))
+                .toList();
     }
 
     public String getUserId() {
