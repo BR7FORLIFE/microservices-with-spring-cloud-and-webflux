@@ -39,9 +39,9 @@ public class RefreshTokenUseCaseImp implements RefreshTokenUseCase {
      * Nos basamos de la entropia para generar el RawToken
      */
     @Override
-    public Mono<String> createRefreshToken(String userId) {
+    public Mono<String> createRefreshToken(UUID userId) {
         return Mono.fromCallable(() -> {
-            String jti = UUID.randomUUID().toString(); // <-- id unico de refreshToken Model
+            UUID jti = UUID.randomUUID(); // <-- id unico de refreshToken Model
             String raw = randomBase64(32); // <-- Raw que devolvemos en el mono Base64 con alta entropia
             String hash = sha256(raw); // <-- Obligatorio hasearlo para seguridad por si roban la DB
             Instant now = Instant.now();

@@ -1,5 +1,7 @@
 package com.example.__WebFlux.infrastructure.refreshToken.repository;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Component;
 
 import com.example.__WebFlux.domain.refreshToken.models.RefreshTokenModel;
@@ -20,7 +22,7 @@ public class R2dbcRefreshTokenRepositoryAdapter implements RefreshTokenDomainRep
     }
 
     @Override
-    public Mono<RefreshTokenModel> findById(String id) {
+    public Mono<RefreshTokenModel> findById(UUID id) {
         return refreshTokenRepository
                 .findById(id)
                 .map(RefreshTokenMapper::toDomain);
@@ -34,7 +36,7 @@ public class R2dbcRefreshTokenRepositoryAdapter implements RefreshTokenDomainRep
     }
 
     @Override
-    public Flux<RefreshTokenModel> findByUserIdAndNotRevoked(String userId) {
+    public Flux<RefreshTokenModel> findByUserIdAndNotRevoked(UUID userId) {
         return refreshTokenRepository
                 .findByUserIdAndRevokedIsFalse(userId)
                 .map(RefreshTokenMapper::toDomain);

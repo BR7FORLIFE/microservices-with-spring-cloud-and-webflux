@@ -1,6 +1,7 @@
 package com.example.__WebFlux.infrastructure.security;
 
 import java.util.Collection;
+import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,7 +11,7 @@ import com.example.__WebFlux.domain.auth.models.UserModelDomain;
 
 public class CustomUserDetails implements UserDetails {
 
-    private String userId;
+    private UUID userId;
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
@@ -25,7 +26,7 @@ public class CustomUserDetails implements UserDetails {
                 .toList();
     }
 
-    public String getUserId() {
+    public UUID getUserId() {
         return this.userId;
     }
 

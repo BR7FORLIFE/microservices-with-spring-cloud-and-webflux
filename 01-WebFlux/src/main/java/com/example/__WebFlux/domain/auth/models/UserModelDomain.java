@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserModelDomain {
-    private String id;
+    private UUID id;
     private String username;
     private String email;
     private String passwordHash;
@@ -15,7 +15,7 @@ public class UserModelDomain {
     public UserModelDomain() {
     }
 
-    public UserModelDomain(String id, String username, String email, String password, Set<UserRol> rols) {
+    public UserModelDomain(UUID id, String username, String email, String password, Set<UserRol> rols) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -36,18 +36,18 @@ public class UserModelDomain {
             throw new IllegalArgumentException("not password!");
         }
 
-        return new UserModelDomain(UUID.randomUUID().toString(), username, email, passwordHash, Set.of(UserRol.USER));
+        return new UserModelDomain(UUID.randomUUID(), username, email, passwordHash, Set.of(UserRol.USER));
     }
 
     public boolean passwordMatches(String raw, PasswordEncoder encoder) {
         return encoder.matches(raw, passwordHash);
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

@@ -1,10 +1,11 @@
 package com.example.__WebFlux.domain.refreshToken.models;
 
 import java.time.Instant;
+import java.util.UUID;
 
 public class RefreshTokenModel {
-    private String id;
-    private String userId;
+    private UUID id;
+    private UUID userId;
     private String tokenHash;
     private Instant expiresAt;
     private boolean revoked;
@@ -13,7 +14,7 @@ public class RefreshTokenModel {
     public RefreshTokenModel() {
     }
 
-    public RefreshTokenModel(String id, String userId, String tokenHash, Instant expiresAt, boolean revoked,
+    public RefreshTokenModel(UUID id, UUID userId, String tokenHash, Instant expiresAt, boolean revoked,
             Instant createAt) {
         this.id = id;
         this.userId = userId;
@@ -23,19 +24,19 @@ public class RefreshTokenModel {
         this.createAt = createAt;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 

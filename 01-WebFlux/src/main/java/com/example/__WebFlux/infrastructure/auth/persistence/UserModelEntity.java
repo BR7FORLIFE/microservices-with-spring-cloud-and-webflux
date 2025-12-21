@@ -1,6 +1,7 @@
 package com.example.__WebFlux.infrastructure.auth.persistence;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
@@ -14,7 +15,7 @@ import lombok.Data;
 @Data
 public class UserModelEntity{
     @Id
-    private String id;
+    private UUID id;
 
     @Column("username")
     private String username;

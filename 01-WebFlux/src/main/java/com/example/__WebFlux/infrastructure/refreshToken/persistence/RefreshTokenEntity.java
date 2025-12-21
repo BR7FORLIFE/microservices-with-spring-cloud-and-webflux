@@ -1,6 +1,7 @@
 package com.example.__WebFlux.infrastructure.refreshToken.persistence;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
@@ -12,10 +13,10 @@ import lombok.Data;
 @Data
 public class RefreshTokenEntity {
     @Id
-    private String id;
+    private UUID id;
 
     @Column("user_id")
-    private String userId;
+    private UUID userId;
 
     @Column("token_hash")
     private String tokenHash;
