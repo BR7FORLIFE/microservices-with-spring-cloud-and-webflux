@@ -8,6 +8,6 @@ import com.example.__WebFlux.domain.auth.models.UserRolEntity;
 
 import reactor.core.publisher.Flux;
 
-public interface SpringDataUserRolRepository extends CrudRepository<UserRolEntity, UUID> {
+public interface SpringDataUserRolRepository extends CrudRepository<UserRolEntity, Long> {
     Flux<UserRolEntity> findByUserId(UUID user_id);
 }
