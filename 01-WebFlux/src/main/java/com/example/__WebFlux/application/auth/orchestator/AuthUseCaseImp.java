@@ -1,6 +1,7 @@
 package com.example.__WebFlux.application.auth.orchestator;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import com.example.__WebFlux.application.auth.command.RegisterUserCommand;
 import com.example.__WebFlux.application.auth.command.RegisterUserCommandResult;
@@ -10,6 +11,7 @@ import com.example.__WebFlux.domain.auth.ports.UserDomainRepositoryPort;
 
 import reactor.core.publisher.Mono;
 
+@Service
 public class AuthUseCaseImp implements AuthUseCase {
 
     private final UserDomainRepositoryPort userPort;
