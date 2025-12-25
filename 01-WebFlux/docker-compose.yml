@@ -1,8 +1,8 @@
+name: 01-webflux-compose
 services:
-
   postgres:
-    image: postgres:16
-    container_name: microservicedb
+    image: postgres:17
+    container_name: postgresql-db
     environment:
       POSTGRES_DB: microservicedb
       POSTGRES_USER: br7forlife
@@ -19,16 +19,22 @@ services:
 
   backend:
     build: .
-    container_name: webflux-container
+    container_name: webflux-backend
     depends_on:
       postgres:
         condition: service_healthy
     ports:
       - "8080:8080"
     environment:
+      #R2DBC
       SPRING_R2DBC_URL: r2dbc:postgresql://postgres:5432/microservicedb
       SPRING_R2DBC_USERNAME: br7forlife
       SPRING_R2DBC_PASSWORD: 12345
+
+      #FLYWAY
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/microservicedb
+      SPRING_DATASOURCE_USERNAME: br7forlife
+      SPRING_DATASOURCE_PASSWORD: 12345
     networks:
       - backend-net
 
