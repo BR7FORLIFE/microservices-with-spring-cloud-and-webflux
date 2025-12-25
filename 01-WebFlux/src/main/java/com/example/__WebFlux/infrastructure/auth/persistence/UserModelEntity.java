@@ -7,14 +7,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import com.example.__WebFlux.domain.auth.models.UserRol;
-
 import lombok.Data;
 
 @Table(name = "users")
 @Data
 public class UserModelEntity{
     @Id
+    @Column("user_id")
     private UUID id;
 
     @Column("username")
@@ -23,9 +22,6 @@ public class UserModelEntity{
     @Column("email")
     private String email;
 
-    @Column("password")
+    @Column("password_hash")
     private String passwordHash;
-
-    @Column("rols")
-    private Set<UserRol> rols;
 }
