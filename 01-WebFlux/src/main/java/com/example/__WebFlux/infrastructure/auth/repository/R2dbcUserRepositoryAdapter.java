@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 import com.example.__WebFlux.domain.auth.models.UserModelDomain;
-import com.example.__WebFlux.domain.auth.models.UserRolEntity;
 import com.example.__WebFlux.domain.auth.ports.UserDomainRepositoryPort;
 import com.example.__WebFlux.infrastructure.auth.mapper.UserMapper;
+import com.example.__WebFlux.infrastructure.auth.persistence.UserRolEntity;
 import com.example.__WebFlux.infrastructure.auth.repository.postgres.SpringDataUserRepository;
 import com.example.__WebFlux.infrastructure.auth.repository.postgres.SpringDataUserRolRepository;
 
@@ -32,7 +32,7 @@ public class R2dbcUserRepositoryAdapter implements UserDomainRepositoryPort {
                         .map(UserRolEntity::getUserRol)
                         .collect(Collectors.toSet())
                         .map(rols -> new UserModelDomain(user.getId(), user.getUsername(), user.getEmail(),
-                                user.getPasswordHash(), user.getRols())));
+                                user.getPasswordHash(), rols)));
     }
 
     @Override
