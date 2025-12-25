@@ -3,14 +3,14 @@ spring:
     name: 01-WebFlux
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/microservicedb
-    username: postgres
-    password: 12345
+    username: br7forlife
+    password: 1234
 
   flyway:
-    enabled: true
-    url: jdbc:postgresql://localhost:5432/microservicedb 
-    user: postgres
-    password: 12345
+    enabled: false
+    url: ${SPRING_DATASOURCE_URL} 
+    user: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     locations:
     - classpath:db/migration
     baseline-on-migrate: true
