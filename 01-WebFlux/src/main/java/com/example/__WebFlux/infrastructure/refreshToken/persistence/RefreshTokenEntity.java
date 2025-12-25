@@ -13,6 +13,7 @@ import lombok.Data;
 @Data
 public class RefreshTokenEntity {
     @Id
+    @Column("refresh_token_id")
     private UUID id;
 
     @Column("user_id")
