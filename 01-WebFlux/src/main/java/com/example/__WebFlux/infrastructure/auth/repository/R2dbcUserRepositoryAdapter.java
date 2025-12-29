@@ -11,6 +11,7 @@ import com.example.__WebFlux.infrastructure.auth.persistence.UserRolEntity;
 import com.example.__WebFlux.infrastructure.auth.repository.postgres.SpringDataUserRepository;
 import com.example.__WebFlux.infrastructure.auth.repository.postgres.SpringDataUserRolRepository;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
@@ -49,6 +50,12 @@ public class R2dbcUserRepositoryAdapter implements UserDomainRepositoryPort {
     @Override
     public Mono<UserModelDomain> save(UserModelDomain userModelDomain) {
         return userRepository.save(UserMapper.toEntity(userModelDomain))
-                .map(UserMapper::toDomain);
+            .flatMap(userSaved ->
+                Flux.fromIterable(userModelDomain.getRols())
+                    .map(role -> new UserRolEntity(userSaved.getId(), role))
+                    .flatMap(userRolRepository::save)
+                    .then(Mono.just(userSaved))
+            )
+            .map(UserMapper::toDomain);
     }
 }
