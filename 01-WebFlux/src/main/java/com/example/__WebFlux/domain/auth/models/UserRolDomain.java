@@ -30,7 +30,7 @@ public class UserRolDomain {
         this.role = userRol;
     }
 
-    public void setUser_id(UUID user_id) {
-        this.userId = user_id;
+    public void setUser_id(UUID userId) {
+        this.userId = userId;
     }
 }
