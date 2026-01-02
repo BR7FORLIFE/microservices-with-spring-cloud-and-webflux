@@ -73,7 +73,7 @@ public class RefreshTokenModel {
     }
 
     public RefreshTokenModel revokedCopy() {
-        return new RefreshTokenModel(id, userId, tokenHash, expiresAt, revoked, createAt);
+        return new RefreshTokenModel(id, userId, tokenHash, expiresAt, true, createAt);
     }
 
     public boolean isExpired(Instant now) {

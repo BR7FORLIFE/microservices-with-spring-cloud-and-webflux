@@ -42,12 +42,12 @@ public class RefreshTokenUseCaseImp implements RefreshTokenUseCase {
     public Mono<String> createRefreshToken(UUID userId) {
         return Mono.fromCallable(() -> {
             UUID jti = UUID.randomUUID(); // <-- id unico de refreshToken Model
-            String raw = randomBase64(32); // <-- Raw que devolvemos en el mono Base64 con alta entropia
-            String hash = sha256(raw); // <-- Obligatorio hasearlo para seguridad por si roban la DB
+            String raw = this.randomBase64(32); // <-- Raw que devolvemos en el mono Base64 con alta entropia
+            String hash = this.sha256(raw); // <-- Obligatorio hasearlo para seguridad por si roban la DB
             Instant now = Instant.now();
             Instant expiredAt = now.plus(ttlDuration);
-            RefreshTokenModel token = new RefreshTokenModel(jti, userId, hash, expiredAt, false, expiredAt);
-            return Tuples.of(token, raw);
+            RefreshTokenModel refreshtokenModel = new RefreshTokenModel(jti, userId, hash, expiredAt, false, expiredAt);
+            return Tuples.of(refreshtokenModel, raw);
         }).flatMap(tuple -> {
             return repository.save(tuple.getT1()).thenReturn(tuple.getT2());
         }).subscribeOn(Schedulers.boundedElastic());
@@ -56,7 +56,7 @@ public class RefreshTokenUseCaseImp implements RefreshTokenUseCase {
     // recibe el raw token, busca por el hash, valida y rota el token
     @Override
     public Mono<String> validateAndRotate(String rawToken) {
-        String hash = sha256(rawToken);
+        String hash = this.sha256(rawToken);
         return repository.findByTokenHash(hash)
                 .switchIfEmpty(Mono.error(new IllegalArgumentException("Invalid refresh token")))
                 .flatMap(rt -> {
@@ -65,12 +65,12 @@ public class RefreshTokenUseCaseImp implements RefreshTokenUseCase {
                     }
 
                     RefreshTokenModel revoked = rt.revokedCopy();
-                    return repository.save(revoked).then(createRefreshToken(rt.getUserId()));
+                    return repository.save(revoked).then(this.createRefreshToken(rt.getUserId()));
                 });
     }
 
     public Mono<Void> revoke(String rawToken) {
-        String hash = sha256(rawToken);
+        String hash = this.sha256(rawToken);
         return repository.findByTokenHash(hash)
                 .flatMap(rt -> repository.save(rt.revokedCopy())).then();
     }
