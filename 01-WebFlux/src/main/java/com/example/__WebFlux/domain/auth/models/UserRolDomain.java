@@ -7,12 +7,12 @@ public class UserRolDomain {
 
     private UUID userId;
 
-    private UserRol role;
+    private String role;
 
     public UserRolDomain() {
     }
 
-    public UserRolDomain(Long id, UUID userId, UserRol role) {
+    public UserRolDomain(Long id, UUID userId, String role) {
         this.id = id;
         this.userId = userId;
         this.role = role;
@@ -22,11 +22,11 @@ public class UserRolDomain {
         return userId;
     }
 
-    public UserRol getUserRol() {
+    public String getUserRol() {
         return this.role;
     }
 
-    public void setUserRol(UserRol userRol) {
+    public void setUserRol(String userRol) {
         this.role = userRol;
     }
 

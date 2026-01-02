@@ -10,12 +10,12 @@ public class UserModelDomain {
     private String username;
     private String email;
     private String passwordHash;
-    private Set<UserRol> rols;
+    private Set<String> rols;
 
     public UserModelDomain() {
     }
 
-    public UserModelDomain(UUID id, String username, String email, String password, Set<UserRol> rols) {
+    public UserModelDomain(UUID id, String username, String email, String password, Set<String> rols) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -36,7 +36,7 @@ public class UserModelDomain {
             throw new IllegalArgumentException("not password!");
         }
 
-        return new UserModelDomain(UUID.randomUUID(), username, email, passwordHash, Set.of(UserRol.USER));
+        return new UserModelDomain(UUID.randomUUID(), username, email, passwordHash, Set.of("USER"));
     }
 
     public boolean passwordMatches(String raw, PasswordEncoder encoder) {
@@ -75,11 +75,11 @@ public class UserModelDomain {
         this.passwordHash = password;
     }
 
-    public Set<UserRol> getRols() {
+    public Set<String> getRols() {
         return rols;
     }
 
-    public void setRols(Set<UserRol> rols) {
+    public void setRols(Set<String> rols) {
         this.rols = rols;
     }
 }

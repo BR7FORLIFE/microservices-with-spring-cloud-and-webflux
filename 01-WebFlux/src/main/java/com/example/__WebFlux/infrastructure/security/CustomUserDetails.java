@@ -22,7 +22,7 @@ public class CustomUserDetails implements UserDetails {
         this.password = userModel.getPassword();
         this.authorities = userModel.getRols()
                 .stream()
-                .map(rol -> new SimpleGrantedAuthority("ROLE_" + rol.name()))
+                .map(rol -> new SimpleGrantedAuthority("ROLE_" + rol))
                 .toList();
     }
 

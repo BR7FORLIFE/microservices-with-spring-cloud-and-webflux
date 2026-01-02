@@ -6,8 +6,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import com.example.__WebFlux.domain.auth.models.UserRol;
-
 @Table(name = "rols")
 public class UserRolEntity {
 
@@ -19,12 +17,12 @@ public class UserRolEntity {
     private UUID userId;
 
     @Column("rol")
-    private UserRol role;
+    private String role;
 
     public UserRolEntity() {
     }
 
-    public UserRolEntity(UUID userId, UserRol role) {
+    public UserRolEntity(UUID userId, String role) {
         this.userId = userId;
         this.role = role;
     }
@@ -33,11 +31,11 @@ public class UserRolEntity {
         return userId;
     }
 
-    public UserRol getUserRol() {
+    public String getUserRol() {
         return this.role;
     }
 
-    public void setUserRol(UserRol userRol) {
+    public void setUserRol(String userRol) {
         this.role = userRol;
     }
 
