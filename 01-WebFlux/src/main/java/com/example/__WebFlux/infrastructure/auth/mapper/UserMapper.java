@@ -14,7 +14,21 @@ public class UserMapper {
 
     public static UserModelEntity toEntity(UserModelDomain userModel) {
         UserModelEntity userModelEntity = new UserModelEntity();
-        userModelEntity.setId(userModel.getId());
+
+        /**
+         * 
+         * Spring Data R2DBC decide entre INSERT y UPDATE únicamente en función del
+         * estado del identificador de la entidad. Si la entidad se persiste con un
+         * campo anotado con @Id no nulo, el framework asume que el registro ya existe y
+         * ejecuta un UPDATE; si el identificador es null, ejecuta un INSERT. R2DBC no
+         * verifica previamente la existencia del registro en la base de datos, ya que
+         * no mantiene un contexto de persistencia ni realiza consultas adicionales. Por
+         * este motivo, al crear nuevas entidades, el identificador no debe asignarse
+         * manualmente y debe ser generado por la base de datos; de lo contrario, Spring
+         * Data intentará actualizar una fila inexistente y la operación fallará.
+         */
+
+        userModelEntity.setId(null);
         userModelEntity.setUsername(userModel.getUsername());
         userModelEntity.setEmail(userModel.getEmail());
         userModelEntity.setPasswordHash(userModel.getPassword());
