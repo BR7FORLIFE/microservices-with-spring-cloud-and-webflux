@@ -1,0 +1,3 @@
+1. [] Arreglar el hecho de que un usuario puede tener multiples refresh_token y la unica forma de invalidarlo es hacerlo manualmente.
+
+2. [] Crear indices en la DB para robustez e integridad a la hora de hacer estos procesos
