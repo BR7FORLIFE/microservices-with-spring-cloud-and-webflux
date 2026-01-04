@@ -1,0 +1,30 @@
+### register
+POST http://localhost:8080/api/auth/register HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "bryan",
+    "password": "bryan123",
+    "email": "username@domain.com"
+}
+
+### login
+POST http://localhost:8080/api/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "bryan",
+    "password": "bryan123",
+    "email": "username@domain.com"
+}
+
+
+### refresh token
+POST http://localhost:8080/api/auth/refresh HTTP/1.1
+Content-Type: application/json
+Cookie:refresh_token=iJUo2aPxoBR3jjNTgdtxJYylq32USfDPoaT9vmN5_E8; Max-Age=2592000; Expires=Sun, 01 Feb 2026 20:09:43 GMT; Path=/api/auth/refresh; Secure; HTTPOnly; SameSite=Strict 
+
+### logout 
+POST http://localhost:8080/api/auth/logout HTTP/1.1
+Content-Type: application/json
+Cookie:refresh_token=iJUo2aPxoBR3jjNTgdtxJYylq32USfDPoaT9vmN5_E8; Max-Age=2592000; Expires=Sun, 01 Feb 2026 20:09:43 GMT; Path=/api/auth/refresh; Secure; HTTPOnly; SameSite=Strict 
