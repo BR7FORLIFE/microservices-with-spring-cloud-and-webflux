@@ -26,6 +26,7 @@ import com.example.__WebFlux.application.refreshToken.orchestrator.RefreshTokenU
 import com.example.__WebFlux.infrastructure.security.CustomUserDetails;
 import com.example.__WebFlux.infrastructure.security.jwt.JwtService;
 
+import io.netty.handler.codec.http.cookie.CookieHeaderNames.SameSite;
 import jakarta.validation.Valid;
 import reactor.core.publisher.Mono;
 
@@ -81,7 +82,7 @@ public class AuthController {
                                                 .secure(true)
                                                 .path("/api/auth/refresh")
                                                 .maxAge(30 * 24 * 60 * 60)
-                                                .sameSite("strict")
+                                                .sameSite(SameSite.Strict.toString())
                                                 .build();
 
                                         response.addCookie(cookie);
