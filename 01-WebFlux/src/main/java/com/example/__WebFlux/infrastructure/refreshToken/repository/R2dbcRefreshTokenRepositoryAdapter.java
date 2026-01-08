@@ -17,36 +17,40 @@ public class R2dbcRefreshTokenRepositoryAdapter implements RefreshTokenDomainRep
 
     private final SpringDataRefreshTokenRepository refreshTokenRepository;
 
-    public R2dbcRefreshTokenRepositoryAdapter(SpringDataRefreshTokenRepository repository){
+    public R2dbcRefreshTokenRepositoryAdapter(SpringDataRefreshTokenRepository repository) {
         this.refreshTokenRepository = repository;
     }
 
     @Override
     public Mono<RefreshTokenModel> findById(UUID id) {
-        return refreshTokenRepository
+        return this.refreshTokenRepository
                 .findById(id)
                 .map(RefreshTokenMapper::toDomain);
     }
 
     @Override
     public Mono<RefreshTokenModel> findByTokenHash(String tokenHash) {
-        return refreshTokenRepository
+        return this.refreshTokenRepository
                 .findByTokenHash(tokenHash)
                 .map(RefreshTokenMapper::toDomain);
     }
 
     @Override
     public Flux<RefreshTokenModel> findByUserIdAndNotRevoked(UUID userId) {
-        return refreshTokenRepository
+        return this.refreshTokenRepository
                 .findByUserIdAndRevokedIsFalse(userId)
                 .map(RefreshTokenMapper::toDomain);
     }
 
     @Override
     public Mono<RefreshTokenModel> save(RefreshTokenModel tokenModel) {
-        return refreshTokenRepository
+        return this.refreshTokenRepository
                 .save(RefreshTokenMapper.toEntity(tokenModel))
                 .map(RefreshTokenMapper::toDomain);
     }
 
+    @Override
+    public Mono<Void> revokeAllByUserId(UUID userId) {
+        return this.refreshTokenRepository.revokeAllByUserId(userId);
+    }
 }
