@@ -12,6 +12,9 @@ import reactor.core.publisher.Mono;
 
 public interface SpringDataRefreshTokenRepository extends ReactiveCrudRepository<RefreshTokenEntity, UUID> {
 
+    @Query("UPDATE refresh_token SET revoked = true WHERE user_id = :userId AND revoked = false")
+    Mono<Void> revokeAllByUserId(UUID userId);
+
     @Query("SELECT * FROM refresh_token WHERE token_hash = :token")
     Mono<RefreshTokenEntity> findByTokenHash(String token);
 
