@@ -3,6 +3,115 @@
 BEGIN;
 
 
+CREATE TABLE IF NOT EXISTS public.catalog_items
+(
+    catalog_id uuid NOT NULL,
+    product_id uuid NOT NULL,
+    custom_label text COLLATE pg_catalog."default",
+    create_at timestamp without time zone DEFAULT now(),
+    CONSTRAINT catalog_items_pk PRIMARY KEY (catalog_id, product_id)
+);
+
+CREATE TABLE IF NOT EXISTS public.catalogs
+(
+    catalog_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    code text COLLATE pg_catalog."default" NOT NULL,
+    slug text COLLATE pg_catalog."default" NOT NULL,
+    name_catalog character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    type_catalog character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    status character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    visible boolean DEFAULT true,
+    CONSTRAINT catalogs_pkey PRIMARY KEY (catalog_id)
+);
+
+CREATE TABLE IF NOT EXISTS public.inventories
+(
+    inventory_id integer NOT NULL DEFAULT nextval('inventorys_inventory_id_seq'::regclass),
+    product_id uuid NOT NULL,
+    quantity integer NOT NULL,
+    warehouse_location text COLLATE pg_catalog."default",
+    last_updated timestamp without time zone DEFAULT now(),
+    CONSTRAINT inventorys_pkey PRIMARY KEY (inventory_id),
+    CONSTRAINT unique_inventory_per_product UNIQUE (product_id)
+);
+
+CREATE TABLE IF NOT EXISTS public.listings
+(
+    listing_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    product_id uuid NOT NULL,
+    price numeric(10, 2),
+    currency text COLLATE pg_catalog."default" DEFAULT 'USD'::text,
+    is_active boolean DEFAULT true,
+    create_at timestamp without time zone DEFAULT now(),
+    update_at timestamp without time zone DEFAULT now(),
+    CONSTRAINT listings_pkey PRIMARY KEY (listing_id),
+    CONSTRAINT unique_listing_per_product UNIQUE (product_id)
+);
+
+CREATE TABLE IF NOT EXISTS public.order_items
+(
+    order_item_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    order_id uuid NOT NULL,
+    listing_id uuid NOT NULL,
+    quantity integer NOT NULL,
+    unit_price numeric(10, 2) NOT NULL,
+    CONSTRAINT order_items_pkey PRIMARY KEY (order_item_id)
+);
+
+CREATE TABLE IF NOT EXISTS public.orders
+(
+    order_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    user_id uuid NOT NULL,
+    order_date timestamp without time zone DEFAULT now(),
+    status text COLLATE pg_catalog."default" DEFAULT 'pending'::text,
+    total_amount numeric(10, 2) NOT NULL,
+    CONSTRAINT orders_pkey PRIMARY KEY (order_id)
+);
+
+CREATE TABLE IF NOT EXISTS public.payments
+(
+    payment_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    order_id uuid NOT NULL,
+    amount numeric(10, 2) NOT NULL,
+    currency text COLLATE pg_catalog."default" DEFAULT 'USD'::text,
+    method_pay text COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default" DEFAULT 'pending'::text,
+    paid_at timestamp without time zone DEFAULT now(),
+    CONSTRAINT payments_pkey PRIMARY KEY (payment_id)
+);
+
+CREATE TABLE IF NOT EXISTS public.products
+(
+    product_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    sku text COLLATE pg_catalog."default",
+    name_product character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    short_description text COLLATE pg_catalog."default" NOT NULL,
+    long_description text COLLATE pg_catalog."default",
+    model character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT products_pkey PRIMARY KEY (product_id)
+);
+
+CREATE TABLE IF NOT EXISTS public.products_variants
+(
+    atribute_id integer NOT NULL DEFAULT nextval('atributies_design_atribute_id_seq'::regclass),
+    image_url text COLLATE pg_catalog."default" NOT NULL,
+    gallery jsonb,
+    thumbnail_url text COLLATE pg_catalog."default",
+    create_at timestamp without time zone DEFAULT now(),
+    update_at timestamp without time zone DEFAULT now(),
+    product_id uuid NOT NULL,
+    CONSTRAINT atributies_design_pkey PRIMARY KEY (atribute_id)
+);
+
+CREATE TABLE IF NOT EXISTS public.references_products
+(
+    reference_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    product_id uuid NOT NULL,
+    reference_type text COLLATE pg_catalog."default",
+    target_product_id uuid NOT NULL,
+    CONSTRAINT references_products_pkey PRIMARY KEY (reference_id)
+);
+
 CREATE TABLE IF NOT EXISTS public.refresh_token
 (
     refresh_token_id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -18,7 +127,7 @@ CREATE TABLE IF NOT EXISTS public.rols
 (
     rol_id serial NOT NULL,
     user_id uuid NOT NULL,
-    rol rols_user NOT NULL,
+    rol character varying COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT rols_pkey PRIMARY KEY (rol_id)
 );
 
@@ -30,6 +139,86 @@ CREATE TABLE IF NOT EXISTS public.users
     password_hash text COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT users_pkey PRIMARY KEY (user_id)
 );
+
+ALTER TABLE IF EXISTS public.catalog_items
+    ADD CONSTRAINT fk_catalog_items_catalog FOREIGN KEY (catalog_id)
+    REFERENCES public.catalogs (catalog_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.catalog_items
+    ADD CONSTRAINT fk_catalog_items_product FOREIGN KEY (product_id)
+    REFERENCES public.products (product_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+CREATE INDEX IF NOT EXISTS idx_catalog_items_product
+    ON public.catalog_items(product_id);
+
+
+ALTER TABLE IF EXISTS public.inventories
+    ADD CONSTRAINT fk_inventories_products FOREIGN KEY (product_id)
+    REFERENCES public.products (product_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+CREATE INDEX IF NOT EXISTS unique_inventory_per_product
+    ON public.inventories(product_id);
+
+
+ALTER TABLE IF EXISTS public.listings
+    ADD CONSTRAINT fk_listings_products FOREIGN KEY (product_id)
+    REFERENCES public.products (product_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+CREATE INDEX IF NOT EXISTS unique_listing_per_product
+    ON public.listings(product_id);
+
+
+ALTER TABLE IF EXISTS public.order_items
+    ADD CONSTRAINT fk_order_items_listing FOREIGN KEY (listing_id)
+    REFERENCES public.listings (listing_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+CREATE INDEX IF NOT EXISTS idx_order_items_listing
+    ON public.order_items(listing_id);
+
+
+ALTER TABLE IF EXISTS public.order_items
+    ADD CONSTRAINT fk_order_items_order FOREIGN KEY (order_id)
+    REFERENCES public.orders (order_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+CREATE INDEX IF NOT EXISTS idx_order_items_order
+    ON public.order_items(order_id);
+
+
+ALTER TABLE IF EXISTS public.orders
+    ADD CONSTRAINT fk_users_orders FOREIGN KEY (user_id)
+    REFERENCES public.users (user_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.payments
+    ADD CONSTRAINT fk_payments_orders FOREIGN KEY (order_id)
+    REFERENCES public.orders (order_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.products_variants
+    ADD CONSTRAINT fk_products_variants_product FOREIGN KEY (product_id)
+    REFERENCES public.products (product_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.references_products
+    ADD CONSTRAINT fk_references_products FOREIGN KEY (product_id)
+    REFERENCES public.products (product_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
 
 ALTER TABLE IF EXISTS public.refresh_token
     ADD CONSTRAINT fk_user_refreshtoken FOREIGN KEY (user_id)
