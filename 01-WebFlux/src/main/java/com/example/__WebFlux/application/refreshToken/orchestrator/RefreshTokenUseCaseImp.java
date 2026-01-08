@@ -40,17 +40,19 @@ public class RefreshTokenUseCaseImp implements RefreshTokenUseCase {
      */
     @Override
     public Mono<String> createRefreshToken(UUID userId) {
-        return Mono.fromCallable(() -> {
-            UUID jti = UUID.randomUUID(); // <-- id unico de refreshToken Model
-            String raw = this.randomBase64(32); // <-- Raw que devolvemos en el mono Base64 con alta entropia
-            String hash = this.sha256(raw); // <-- Obligatorio hasearlo para seguridad por si roban la DB
-            Instant now = Instant.now();
-            Instant expiredAt = now.plus(ttlDuration);
-            RefreshTokenModel refreshtokenModel = new RefreshTokenModel(jti, userId, hash, expiredAt, false, expiredAt);
-            return Tuples.of(refreshtokenModel, raw);
-        }).flatMap(tuple -> {
-            return repository.save(tuple.getT1()).thenReturn(tuple.getT2());
-        }).subscribeOn(Schedulers.boundedElastic());
+        return repository.revokeAllByUserId(userId)
+                .then(Mono.fromCallable(() -> {
+                    UUID jti = UUID.randomUUID(); // <-- id unico de refreshToken Model
+                    String raw = this.randomBase64(32); // <-- Raw que devolvemos en el mono Base64 con alta entropia
+                    String hash = this.sha256(raw); // <-- Obligatorio hasearlo para seguridad por si roban la DB
+                    Instant now = Instant.now();
+                    Instant expiredAt = now.plus(ttlDuration);
+                    RefreshTokenModel refreshtokenModel = new RefreshTokenModel(jti, userId, hash, expiredAt, false,
+                            expiredAt);
+                    return Tuples.of(refreshtokenModel, raw);
+                }).flatMap(tuple -> {
+                    return repository.save(tuple.getT1()).thenReturn(tuple.getT2());
+                }).subscribeOn(Schedulers.boundedElastic()));
     }
 
     // recibe el raw token, busca por el hash, valida y rota el token
