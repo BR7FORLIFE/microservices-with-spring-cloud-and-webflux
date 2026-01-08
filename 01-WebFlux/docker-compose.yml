@@ -38,6 +38,14 @@ services:
     networks:
       - backend-net
 
+  simulator:
+    build: ./python-users-registers
+    container_name: register-users-python
+    depends_on: 
+      - backend
+    networks:
+      - backend-net
+
 volumes:
   pgdata:
 
