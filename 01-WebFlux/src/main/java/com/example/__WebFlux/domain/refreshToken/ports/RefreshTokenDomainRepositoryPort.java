@@ -9,6 +9,8 @@ import reactor.core.publisher.Mono;
 
 public interface RefreshTokenDomainRepositoryPort {
 
+    Mono<Void> revokeAllByUserId(UUID userId);
+
     Mono<RefreshTokenModel> findByTokenHash(String tokenHash);
 
     Mono<RefreshTokenModel> findById(UUID id);
