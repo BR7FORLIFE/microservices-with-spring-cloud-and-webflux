@@ -56,7 +56,7 @@ public class SecurityConfig {
     public ReactiveAuthenticationManager reactiveAuthenticationManager(
             ReactiveUserDetailsService reactiveUserDetailsService,
             PasswordEncoder passwordEncoder) throws Exception {
-        return new JwtReactiveAuthenticationManager(jwtService);
+        return new JwtReactiveAuthenticationManager(jwtService); // -> implementacion de ReactiveUserDetailsService
     }
 
     @Bean

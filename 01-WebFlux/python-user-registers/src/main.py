@@ -4,7 +4,7 @@ import sys
 import httpx
 import json
 
-NUMBER_USER_REGISTER = 40
+NUMBER_USER_REGISTER = 50
 APIURL = "http://localhost:8080/api/auth"
 BASE_DIR = Path(__file__).resolve().parent
 JSON_PATH = BASE_DIR / "users.json"

@@ -19,7 +19,7 @@ logging:
   level:
     '[org.springframework]': debug
     '[io.r2dbc.postgresql]': debug 
-
+    
 
 server:
   port: 8080
