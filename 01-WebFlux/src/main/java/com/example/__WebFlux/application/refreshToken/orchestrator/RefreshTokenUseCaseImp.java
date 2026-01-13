@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.example.__WebFlux.application.refreshToken.usecases.RefreshTokenUseCase;
 import com.example.__WebFlux.domain.refreshToken.models.RefreshTokenModel;
 import com.example.__WebFlux.domain.refreshToken.ports.RefreshTokenDomainRepositoryPort;
+import com.example.__WebFlux.domain.refreshToken.services.RefreshTokenDomainService;
 import com.nimbusds.jose.util.StandardCharset;
 
 import reactor.core.publisher.Mono;
@@ -62,11 +63,11 @@ public class RefreshTokenUseCaseImp implements RefreshTokenUseCase {
         return repository.findByTokenHash(hash)
                 .switchIfEmpty(Mono.error(new IllegalArgumentException("Invalid refresh token")))
                 .flatMap(rt -> {
-                    if (rt.isRevoked() || rt.isExpired(Instant.now())) {
+                    if (RefreshTokenDomainService.validateToken(rt, Instant.now())) {
                         return Mono.error(new IllegalArgumentException("Refresh token invalid"));
                     }
+                    RefreshTokenModel revoked = RefreshTokenDomainService.revoke(rt);
 
-                    RefreshTokenModel revoked = rt.revokedCopy();
                     return repository.save(revoked).then(this.createRefreshToken(rt.getUserId()));
                 });
     }
