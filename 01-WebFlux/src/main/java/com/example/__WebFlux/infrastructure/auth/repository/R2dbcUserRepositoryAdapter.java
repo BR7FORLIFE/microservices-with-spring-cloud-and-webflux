@@ -1,5 +1,6 @@
 package com.example.__WebFlux.infrastructure.auth.repository;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
@@ -27,6 +28,16 @@ public class R2dbcUserRepositoryAdapter implements UserDomainRepositoryPort {
     }
 
     @Override
+    public Mono<UserModelDomain> findByUserId(UUID id) {
+        return userRepository.findById(id)
+                .flatMap(user -> userRolRepository.findByUserId(user.getId())
+                        .map(UserRolEntity::getUserRol)
+                        .collect(Collectors.toSet())
+                        .map(rols -> new UserModelDomain(user.getId(), user.getUsername(), user.getEmail(),
+                                user.getPasswordHash(), rols)));
+    }
+
+    @Override
     public Mono<UserModelDomain> findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .flatMap(user -> userRolRepository.findByUserId(user.getId())
@@ -43,19 +54,12 @@ public class R2dbcUserRepositoryAdapter implements UserDomainRepositoryPort {
     }
 
     @Override
-    public Mono<Boolean> existsByUsername(String username) {
-        return userRepository.existsByUsername(username);
-    }
-
-    @Override
     public Mono<UserModelDomain> save(UserModelDomain userModelDomain) {
         return userRepository.save(UserMapper.toEntity(userModelDomain))
-            .flatMap(userSaved ->
-                Flux.fromIterable(userModelDomain.getRols())
-                    .map(role -> new UserRolEntity(userSaved.getId(), role))
-                    .flatMap(userRolRepository::save)
-                    .then(Mono.just(userSaved))
-            )
-            .map(UserMapper::toDomain);
+                .flatMap(userSaved -> Flux.fromIterable(userModelDomain.getRols())
+                        .map(role -> new UserRolEntity(userSaved.getId(), role))
+                        .flatMap(userRolRepository::save)
+                        .then(Mono.just(userSaved)))
+                .map(UserMapper::toDomain);
     }
 }
