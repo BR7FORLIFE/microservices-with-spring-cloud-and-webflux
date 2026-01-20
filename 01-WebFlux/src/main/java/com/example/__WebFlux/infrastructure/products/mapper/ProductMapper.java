@@ -6,7 +6,7 @@ import com.example.__WebFlux.infrastructure.products.persistence.ProductEntity;
 public class ProductMapper {
 
     public static ProductModelDomain toDomain(ProductEntity productEntity) {
-        return new ProductModelDomain(
+        return ProductModelDomain.createNew(
                 productEntity.getProductId(),
                 productEntity.getSku(),
                 productEntity.getName(),
@@ -17,7 +17,7 @@ public class ProductMapper {
 
     public static ProductEntity toEntity(ProductModelDomain productModelDomain) {
         ProductEntity productEntity = new ProductEntity();
-        productEntity.setProductId(productModelDomain.getProductId());
+        productEntity.setProductId(null);
         productEntity.setSku(productModelDomain.getSku());
         productEntity.setName(productModelDomain.getName());
         productEntity.setShortDescription(productModelDomain.getShortDescription());
