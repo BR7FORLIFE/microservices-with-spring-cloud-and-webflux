@@ -25,4 +25,4 @@ server:
   port: 8080
 
 refresh-token:
-  ttl: 30d
+  ttl: 30d 
