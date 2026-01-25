@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.example.webflux.domain.refreshToken.models.RefreshTokenModel;
 import com.example.webflux.domain.refreshToken.ports.RefreshTokenDomainRepositoryPort;
 import com.example.webflux.infrastructure.refreshToken.mapper.RefreshTokenMapper;
-import com.example.webflux.infrastructure.refreshToken.repository.postgres.SpringDataRefreshTokenRepository;
+import com.example.webflux.infrastructure.refreshToken.repository.postgres.R2dbcPostgresRefreshTokenRepository;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -15,10 +15,10 @@ import reactor.core.publisher.Mono;
 @Repository
 public class R2dbcRefreshTokenRepositoryAdapter implements RefreshTokenDomainRepositoryPort {
 
-    private final SpringDataRefreshTokenRepository refreshTokenRepository;
+    private final R2dbcPostgresRefreshTokenRepository refreshTokenRepository;
 
-    public R2dbcRefreshTokenRepositoryAdapter(SpringDataRefreshTokenRepository repository) {
-        this.refreshTokenRepository = repository;
+    public R2dbcRefreshTokenRepositoryAdapter(R2dbcPostgresRefreshTokenRepository r2dbcPostgresRefreshTokenRepository) {
+        this.refreshTokenRepository = r2dbcPostgresRefreshTokenRepository;
     }
 
     @Override

@@ -9,8 +9,8 @@ import com.example.webflux.domain.auth.models.UserModelDomain;
 import com.example.webflux.domain.auth.ports.UserDomainRepositoryPort;
 import com.example.webflux.infrastructure.auth.mapper.UserMapper;
 import com.example.webflux.infrastructure.auth.persistence.UserRolEntity;
-import com.example.webflux.infrastructure.auth.repository.postgres.SpringDataUserRepository;
-import com.example.webflux.infrastructure.auth.repository.postgres.SpringDataUserRolRepository;
+import com.example.webflux.infrastructure.auth.repository.postgres.R2dbcPostgresUserRepository;
+import com.example.webflux.infrastructure.auth.repository.postgres.R2dbcPostgresUserRolRepository;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -18,13 +18,13 @@ import reactor.core.publisher.Mono;
 @Repository
 public class R2dbcUserRepositoryAdapter implements UserDomainRepositoryPort {
 
-    private final SpringDataUserRepository userRepository;
-    private final SpringDataUserRolRepository userRolRepository;
+    private final R2dbcPostgresUserRepository userRepository;
+    private final R2dbcPostgresUserRolRepository userRolRepository;
 
-    public R2dbcUserRepositoryAdapter(SpringDataUserRepository springDataUserRepository,
-            SpringDataUserRolRepository userRolRepository) {
-        this.userRepository = springDataUserRepository;
-        this.userRolRepository = userRolRepository;
+    public R2dbcUserRepositoryAdapter(R2dbcPostgresUserRepository r2dbcPostgresUserRepository,
+            R2dbcPostgresUserRolRepository r2dbcPostgresUserRolRepository) {
+        this.userRepository = r2dbcPostgresUserRepository;
+        this.userRolRepository = r2dbcPostgresUserRolRepository;
     }
 
     @Override
