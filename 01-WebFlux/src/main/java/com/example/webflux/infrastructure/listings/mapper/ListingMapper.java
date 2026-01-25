@@ -9,6 +9,7 @@ public class ListingMapper {
         return new ListingModelDomain(
                 listingEntity.getListingId(),
                 listingEntity.getProductId(),
+                listingEntity.getUserId(),
                 listingEntity.getPrice(),
                 listingEntity.getCurrency(),
                 listingEntity.getIsActive(),
@@ -20,6 +21,7 @@ public class ListingMapper {
         ListingEntity listingEntity = new ListingEntity();
         listingEntity.setListingId(null);
         listingEntity.setProductId(listingModelDomain.getProductId());
+        listingEntity.setUserId(listingModelDomain.getUserId());
         listingEntity.setPrice(listingModelDomain.getPrice());
         listingEntity.setCurrency(listingModelDomain.getCurrency());
         listingEntity.setIsActive(listingModelDomain.getIsactive());

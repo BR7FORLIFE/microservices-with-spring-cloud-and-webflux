@@ -11,14 +11,16 @@ import lombok.Data;
 
 @Table(name = "listings")
 @Data
-public class ListingEntity {    
+public class ListingEntity {
     @Id
     @Column("listing_id")
     private UUID listingId;
 
-    @Id
     @Column("product_id")
     private UUID productId;
+
+    @Column("user_id")
+    private UUID userId;
 
     @Column("price")
     private Double price;
