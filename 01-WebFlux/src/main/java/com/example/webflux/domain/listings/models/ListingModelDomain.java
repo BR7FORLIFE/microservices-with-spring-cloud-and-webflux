@@ -6,13 +6,15 @@ import java.util.UUID;
 public class ListingModelDomain {
     private UUID listingId;
     private UUID productId;
+    private UUID userId;
     private Double price;
     private String currency;
     private Boolean isactive;
     private Instant createAt;
     private Instant updateAt;
 
-    public ListingModelDomain(UUID listingId, UUID productId, Double price, String currency, Boolean isactive,
+    public ListingModelDomain(UUID listingId, UUID productId, UUID userId, Double price, String currency,
+            Boolean isactive,
             Instant createAt, Instant updateAt) {
         this.listingId = listingId;
         this.productId = productId;
@@ -37,6 +39,14 @@ public class ListingModelDomain {
 
     public void setProductId(UUID productId) {
         this.productId = productId;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
     }
 
     public Double getPrice() {
