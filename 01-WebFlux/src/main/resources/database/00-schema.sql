@@ -27,12 +27,12 @@ CREATE TABLE IF NOT EXISTS public.catalogs
 CREATE TABLE IF NOT EXISTS public.inventories
 (
     inventory_id integer NOT NULL DEFAULT nextval('inventorys_inventory_id_seq'::regclass),
-    product_id uuid NOT NULL,
     quantity integer NOT NULL,
     warehouse_location text COLLATE pg_catalog."default",
     last_updated timestamp without time zone DEFAULT now(),
+    listing_id uuid NOT NULL,
     CONSTRAINT inventorys_pkey PRIMARY KEY (inventory_id),
-    CONSTRAINT unique_inventory_per_product UNIQUE (product_id)
+    CONSTRAINT unique_inventory_per_listings UNIQUE (listing_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.listings
@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS public.listings
     is_active boolean DEFAULT true,
     create_at timestamp without time zone DEFAULT now(),
     update_at timestamp without time zone DEFAULT now(),
-    CONSTRAINT listings_pkey PRIMARY KEY (listing_id),
-    CONSTRAINT unique_listing_per_product UNIQUE (product_id)
+    user_id uuid NOT NULL,
+    CONSTRAINT listings_pkey PRIMARY KEY (listing_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.order_items
@@ -83,12 +83,13 @@ CREATE TABLE IF NOT EXISTS public.payments
 CREATE TABLE IF NOT EXISTS public.products
 (
     product_id uuid NOT NULL DEFAULT gen_random_uuid(),
-    sku text COLLATE pg_catalog."default",
     name_product character varying(20) COLLATE pg_catalog."default" NOT NULL,
     short_description text COLLATE pg_catalog."default" NOT NULL,
     long_description text COLLATE pg_catalog."default",
     model character varying(30) COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT products_pkey PRIMARY KEY (product_id)
+    sku text COLLATE pg_catalog."default",
+    CONSTRAINT products_pkey PRIMARY KEY (product_id),
+    CONSTRAINT products_sku_key UNIQUE (sku)
 );
 
 CREATE TABLE IF NOT EXISTS public.products_variants
@@ -157,12 +158,12 @@ CREATE INDEX IF NOT EXISTS idx_catalog_items_product
 
 
 ALTER TABLE IF EXISTS public.inventories
-    ADD CONSTRAINT fk_inventories_products FOREIGN KEY (product_id)
-    REFERENCES public.products (product_id) MATCH SIMPLE
+    ADD CONSTRAINT fk_inventories_listings FOREIGN KEY (listing_id)
+    REFERENCES public.listings (listing_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
-CREATE INDEX IF NOT EXISTS unique_inventory_per_product
-    ON public.inventories(product_id);
+CREATE INDEX IF NOT EXISTS unique_inventory_per_listings
+    ON public.inventories(listing_id);
 
 
 ALTER TABLE IF EXISTS public.listings
@@ -170,8 +171,15 @@ ALTER TABLE IF EXISTS public.listings
     REFERENCES public.products (product_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
-CREATE INDEX IF NOT EXISTS unique_listing_per_product
+CREATE INDEX IF NOT EXISTS idx_listings_product
     ON public.listings(product_id);
+
+
+ALTER TABLE IF EXISTS public.listings
+    ADD CONSTRAINT fk_listings_user FOREIGN KEY (user_id)
+    REFERENCES public.users (user_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
 
 
 ALTER TABLE IF EXISTS public.order_items
