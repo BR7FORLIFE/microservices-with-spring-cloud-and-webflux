@@ -1,7 +1,50 @@
 package com.example.webflux.domain.listings.models;
 
 public enum ListingStatusReview {
-    PENDING, SUCCESFULL, ISSUE, REFUSED
+    DRAFT {
+        @Override
+        public ListingStatusReview submit() {
+            return IN_REVIEW;
+        }
+    },
+
+    IN_REVIEW {
+        @Override
+        public ListingStatusReview approve() {
+            return PUBLISHED;
+        }
+
+        @Override
+        public ListingStatusReview requestFix() {
+            return NEEDS_FIX;
+        }
+
+        @Override
+        public ListingStatusReview reject() {
+            return REJECTED;
+        }
+    },
+
+    NEEDS_FIX {
+        @Override
+        public ListingStatusReview resubmit() {
+            return IN_REVIEW;
+        }
+    },
+
+    PUBLISHED,
+    REJECTED;
+
+    // default
+    public ListingStatusReview submit() { throw invalid(); }
+    public ListingStatusReview approve() { throw invalid(); }
+    public ListingStatusReview requestFix() { throw invalid(); }
+    public ListingStatusReview reject() { throw invalid(); }
+    public ListingStatusReview resubmit() { throw invalid(); }
+
+    private RuntimeException invalid() {
+        return new IllegalStateException("Invalid transition");
+    }
 }
 
 /**
@@ -27,6 +70,6 @@ public enum ListingStatusReview {
  * 
  * ESTADO INICIAL PENDING -> SUCCESFULL O REFUSED // rechazado o aceptado directamente sin pasar por ISSUE
  * 
-
+ * 
  * 
  */

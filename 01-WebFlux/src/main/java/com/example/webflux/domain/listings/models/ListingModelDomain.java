@@ -3,90 +3,74 @@ package com.example.webflux.domain.listings.models;
 import java.time.Instant;
 import java.util.UUID;
 
-public class ListingModelDomain {
-    private UUID listingId;
-    private UUID productId;
-    private UUID userId;
-    private Double price;
-    private String currency;
-    private Boolean isactive;
-    private Instant createAt;
-    private Instant updateAt;
+public final class ListingModelDomain {
+    private final UUID listingId;
+    private final UUID productId;
+    private final UUID userId;
+    private final Double price;
+    private final String currency;
+    private final Boolean isactive;
+    private final String status;
+    private final Instant createAt;
+    private final Instant updateAt;
 
-    public ListingModelDomain(UUID listingId, UUID productId, UUID userId, Double price, String currency,
-            Boolean isactive,
+    private ListingModelDomain(UUID listingId, UUID productId, UUID userId, Double price, String currency,
+            Boolean isactive, String status,
             Instant createAt, Instant updateAt) {
         this.listingId = listingId;
         this.productId = productId;
+        this.userId = userId;
         this.price = price;
         this.currency = currency;
         this.isactive = isactive;
+        this.status = status;
         this.createAt = createAt;
         this.updateAt = updateAt;
+    }
+
+    public static ListingModelDomain createNew(UUID listingId, UUID productId, UUID userId, Double price,
+            String currency,
+            Boolean isactive,
+            String status,
+            Instant createAt, Instant updateAt) {
+        return new ListingModelDomain(listingId, productId, userId, price, currency, isactive, status, createAt,
+                updateAt);
     }
 
     public UUID getListingId() {
         return listingId;
     }
 
-    public void setListingId(UUID listingId) {
-        this.listingId = listingId;
-    }
-
     public UUID getProductId() {
         return productId;
-    }
-
-    public void setProductId(UUID productId) {
-        this.productId = productId;
     }
 
     public UUID getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-
     public Double getPrice() {
         return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
     }
 
     public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
     public Boolean getIsactive() {
         return isactive;
     }
 
-    public void setIsactive(Boolean isactive) {
-        this.isactive = isactive;
+    public String getStatus() {
+        return status;
     }
 
     public Instant getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(Instant createAt) {
-        this.createAt = createAt;
-    }
-
     public Instant getUpdateAt() {
         return updateAt;
-    }
-
-    public void setUpdateAt(Instant updateAt) {
-        this.updateAt = updateAt;
     }
 
 }
