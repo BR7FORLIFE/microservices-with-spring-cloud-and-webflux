@@ -6,13 +6,14 @@ import com.example.webflux.infrastructure.listings.persistence.ListingEntity;
 public class ListingMapper {
 
     public static ListingModelDomain toDomain(ListingEntity listingEntity) {
-        return new ListingModelDomain(
+        return ListingModelDomain.createNew(
                 listingEntity.getListingId(),
                 listingEntity.getProductId(),
                 listingEntity.getUserId(),
                 listingEntity.getPrice(),
                 listingEntity.getCurrency(),
                 listingEntity.getIsActive(),
+                listingEntity.getStatus(),
                 listingEntity.getCreateAt(),
                 listingEntity.getUpdateAt());
     }
@@ -25,6 +26,7 @@ public class ListingMapper {
         listingEntity.setPrice(listingModelDomain.getPrice());
         listingEntity.setCurrency(listingModelDomain.getCurrency());
         listingEntity.setIsActive(listingModelDomain.getIsactive());
+        listingEntity.setStatus(listingModelDomain.getStatus());
         listingEntity.setCreateAt(listingModelDomain.getCreateAt());
         listingEntity.setUpdateAt(listingModelDomain.getUpdateAt());
 

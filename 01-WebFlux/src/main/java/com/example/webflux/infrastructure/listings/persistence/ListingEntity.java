@@ -31,6 +31,9 @@ public class ListingEntity {
     @Column("is_active")
     private Boolean isActive;
 
+    @Column("status")
+    private String status;
+
     @Column("create_at")
     private Instant createAt;
 

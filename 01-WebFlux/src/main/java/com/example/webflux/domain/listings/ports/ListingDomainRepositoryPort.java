@@ -1,5 +1,9 @@
 package com.example.webflux.domain.listings.ports;
 
-public class ListingDomainRepositoryPort {
-    
+import com.example.webflux.domain.listings.models.ListingModelDomain;
+
+import reactor.core.publisher.Mono;
+
+public interface ListingDomainRepositoryPort {
+    Mono<ListingModelDomain> save(ListingModelDomain listing);
 }
