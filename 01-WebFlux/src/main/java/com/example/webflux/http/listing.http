@@ -1,0 +1,16 @@
+### crear un listing
+
+POST http://localhost:8080/api/listing/create HTTP/1.1
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJCUjdGT1JMSUZFLmNvbSIsInN1YiI6Ik1hcmN1cyBIYXJyaXMiLCJST0xTIjpbeyJyb2xlIjoiUk9MRV9VU0VSIn1dLCJleHAiOjE3NzAxNzk0NDcsImlhdCI6MTc2OTk2MzQ0NywianRpIjoiNTcyNWYwNjQtNzJjZC00YjFiLTk5NzUtNDVjNTE4ZGMyYmEwIn0.b_ErAs-KwRLpz7x3O5GNzPK4qJN8PiPkhGfmGZLnUeFu1r2rDLrpGBVQ3qjusknh5OQ4AwqY-gnWR_gxgV2gQc0_cwEK4rLcXOQXd4_p3J9g71vkhv_kwlWFXyTqp6UtUzIHgGavQxfyGkIxyZV7ocwv866Dx-3-nEtCLnPEuKeNUdOzPGtbd7PGapG1IgrRAVXo3uDGUCgn9WXnVNzCqv9iFNOH4kZLR3HUPE6CVIxwPu7RHKrFfLlIMGLxJJlKNP3GJNTKosH2pZLKQQRwTydIw4g3wXWN4XUS3ruQ9OIifp-CTch0oARlVEilo9CuVvs6i-sai45_C3P6VZ5ZrA
+Content-Type: application/json
+
+
+{
+    "sku": "123-456",
+    "name": "iphone 14",
+    "shortDescription": "un iphone nuevo",
+    "longDescription": "iphone 14 como nuevo listo para usar",
+    "model": "14",
+    "price": 2500,
+    "currency": "USD"
+}
