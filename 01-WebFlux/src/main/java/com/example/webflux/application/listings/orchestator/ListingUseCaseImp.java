@@ -16,6 +16,7 @@ import com.example.webflux.application.listings.command.RejectedListingCommandRe
 import com.example.webflux.application.listings.command.SuspendListingCommand;
 import com.example.webflux.application.listings.command.SuspendListingCommandResult;
 import com.example.webflux.application.listings.usecases.ListingUseCase;
+import com.example.webflux.application.orders.commands.CreateOrderCommandResult;
 import com.example.webflux.domain.auth.ports.UserDomainRepositoryPort;
 import com.example.webflux.domain.listings.models.ListingModelDomain;
 import com.example.webflux.domain.listings.models.ListingStatusReview;
@@ -28,20 +29,50 @@ import reactor.core.publisher.Mono;
 @Service
 public class ListingUseCaseImp implements ListingUseCase {
 
-    private final UserDomainRepositoryPort userPort;
     private final ProductDomainRepositoryPort productPort;
     private final ListingDomainRepositoryPort listingPort;
 
-    public ListingUseCaseImp(UserDomainRepositoryPort userPort, ProductDomainRepositoryPort productPort,
+    public ListingUseCaseImp(ProductDomainRepositoryPort productPort,
             ListingDomainRepositoryPort listingPort) {
-        this.userPort = userPort;
         this.productPort = productPort;
         this.listingPort = listingPort;
     }
 
     @Override
     public Mono<CreateListingCommandResult> createListing(CreateListingCommand cmd) {
-        return null;
+
+        return productPort.findBySku(cmd.product().sku())
+                .hasElement()
+                .flatMap(exists -> {
+
+                    if (exists) {
+                        return Mono.error(
+                                new IllegalArgumentException(
+                                        "The current product exists! please register another product with different sku!"));
+                    }
+
+                    return productPort.save(
+                            ProductModelDomain.createNew(
+                                    cmd.product().sku(),
+                                    cmd.product().name(),
+                                    cmd.product().shortDescription(),
+                                    cmd.product().longDescription(),
+                                    cmd.product().model()))
+                            .flatMap(product -> {
+
+                                ListingModelDomain listing = ListingModelDomain.createDraft(
+                                        product.getProductId(),
+                                        cmd.userId(),
+                                        cmd.price(),
+                                        cmd.currency());
+
+                                return listingPort.save(listing);
+                            })
+                            .map(listing -> new CreateListingCommandResult(
+                                    listing.getListingId(),
+                                    listing.getStatus().name(),
+                                    "Listing create succesfull!"));
+                });
     }
 
     @Override
