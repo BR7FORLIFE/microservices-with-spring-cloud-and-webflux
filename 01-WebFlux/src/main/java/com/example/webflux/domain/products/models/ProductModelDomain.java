@@ -32,7 +32,7 @@ public final class ProductModelDomain {
             String longDescription,
             String model) {
         return new ProductModelDomain(
-                null,
+                UUID.randomUUID(),
                 sku,
                 name,
                 shortDescription,
@@ -48,7 +48,7 @@ public final class ProductModelDomain {
             String longDescription,
             String model) {
         return new ProductModelDomain(
-                null,
+                id,
                 sku,
                 name,
                 shortDescription,

@@ -1,6 +1,7 @@
 package com.example.webflux.infrastructure.listings.mapper;
 
 import com.example.webflux.domain.listings.models.ListingModelDomain;
+import com.example.webflux.domain.listings.models.ListingStatusReview;
 import com.example.webflux.infrastructure.listings.persistence.ListingEntity;
 
 public class ListingMapper {
@@ -13,7 +14,7 @@ public class ListingMapper {
                 listingEntity.getPrice(),
                 listingEntity.getCurrency(),
                 listingEntity.getIsActive(),
-                listingEntity.getStatus(),
+                ListingStatusReview.valueOf(listingEntity.getStatus()),
                 listingEntity.getCreateAt(),
                 listingEntity.getUpdateAt());
     }
@@ -26,7 +27,7 @@ public class ListingMapper {
         listingEntity.setPrice(listingModelDomain.getPrice());
         listingEntity.setCurrency(listingModelDomain.getCurrency());
         listingEntity.setIsActive(listingModelDomain.getIsactive());
-        listingEntity.setStatus(listingModelDomain.getStatus());
+        listingEntity.setStatus(listingModelDomain.getStatus().name());
         listingEntity.setCreateAt(listingModelDomain.getCreateAt());
         listingEntity.setUpdateAt(listingModelDomain.getUpdateAt());
 

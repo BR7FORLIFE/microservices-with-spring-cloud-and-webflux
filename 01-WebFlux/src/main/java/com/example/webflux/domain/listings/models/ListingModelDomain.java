@@ -10,12 +10,12 @@ public final class ListingModelDomain {
     private final Double price;
     private final String currency;
     private final Boolean isactive;
-    private final String status;
+    private final ListingStatusReview status;
     private final Instant createAt;
     private final Instant updateAt;
 
     private ListingModelDomain(UUID listingId, UUID productId, UUID userId, Double price, String currency,
-            Boolean isactive, String status,
+            Boolean isactive, ListingStatusReview status,
             Instant createAt, Instant updateAt) {
         this.listingId = listingId;
         this.productId = productId;
@@ -31,10 +31,57 @@ public final class ListingModelDomain {
     public static ListingModelDomain createNew(UUID listingId, UUID productId, UUID userId, Double price,
             String currency,
             Boolean isactive,
-            String status,
+            ListingStatusReview status,
             Instant createAt, Instant updateAt) {
         return new ListingModelDomain(listingId, productId, userId, price, currency, isactive, status, createAt,
                 updateAt);
+    }
+
+    public static ListingModelDomain createDraft(
+            UUID productId,
+            UUID userId,
+            Double price,
+            String currency) {
+        Instant now = Instant.now();
+        return new ListingModelDomain(
+                UUID.randomUUID(),
+                productId,
+                userId,
+                price,
+                currency,
+                false,
+                ListingStatusReview.DRAFT,
+                now,
+                now);
+    }
+
+    public ListingModelDomain submit() {
+        return changeStatus(status.submit());
+    }
+
+    public ListingModelDomain approve() {
+        return changeStatus(status.approve());
+    }
+
+    public ListingModelDomain requestFix() {
+        return changeStatus(status.requestFix());
+    }
+
+    public ListingModelDomain reject() {
+        return changeStatus(status.reject());
+    }
+
+    private ListingModelDomain changeStatus(ListingStatusReview newStatus) {
+        return new ListingModelDomain(
+                listingId,
+                productId,
+                userId,
+                price,
+                currency,
+                isactive,
+                newStatus,
+                createAt,
+                Instant.now());
     }
 
     public UUID getListingId() {
@@ -61,7 +108,7 @@ public final class ListingModelDomain {
         return isactive;
     }
 
-    public String getStatus() {
+    public ListingStatusReview getStatus() {
         return status;
     }
 

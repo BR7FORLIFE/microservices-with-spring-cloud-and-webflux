@@ -19,11 +19,11 @@ public class ListingService {
     }
 
     public void reject() {
-        this.reject();
+        this.status.reject();
     }
 
     public void resubmit() {
-        this.resubmit();
+        this.status.resubmit();
     }
 
     public ListingStatusReview getStatus() {

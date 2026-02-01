@@ -18,7 +18,7 @@ public class ListingEntity {
 
     @Column("product_id")
     private UUID productId;
-
+    
     @Column("user_id")
     private UUID userId;
 
