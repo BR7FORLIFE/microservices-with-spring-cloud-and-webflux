@@ -1,5 +1,7 @@
 package com.example.webflux.application.listings.command;
 
-public record CreateListingCommandResult() {
-    
+import java.util.UUID;
+
+public record CreateListingCommandResult(UUID listingId, String status ,String message) {
+
 }
