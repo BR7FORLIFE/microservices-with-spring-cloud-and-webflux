@@ -6,6 +6,10 @@ public class ListingService {
 
     private ListingStatusReview status;
 
+    public ListingService(ListingStatusReview status) {
+        this.status = status;
+    }
+
     public void submit() {
         this.status = status.submit();
     }
