@@ -11,6 +11,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.example.webflux.application.refreshToken.exceptions.ValidateAndRotateException;
 import com.example.webflux.application.refreshToken.usecases.RefreshTokenUseCase;
 import com.example.webflux.domain.refreshToken.models.RefreshTokenModel;
 import com.example.webflux.domain.refreshToken.ports.RefreshTokenDomainRepositoryPort;
@@ -48,8 +49,8 @@ public class RefreshTokenUseCaseImp implements RefreshTokenUseCase {
                     String hash = this.sha256(raw); // <-- Obligatorio hasearlo para seguridad por si roban la DB
                     Instant now = Instant.now();
                     Instant expiredAt = now.plus(ttlDuration);
-                    RefreshTokenModel refreshtokenModel = new RefreshTokenModel(jti, userId, hash, expiredAt, false,
-                            expiredAt);
+                    RefreshTokenModel refreshtokenModel = RefreshTokenModel.create(userId, userId, hash,
+                            expiredAt, false, expiredAt);
                     return Tuples.of(refreshtokenModel, raw);
                 }).flatMap(tuple -> {
                     return repository.save(tuple.getT1()).thenReturn(tuple.getT2());
@@ -61,12 +62,12 @@ public class RefreshTokenUseCaseImp implements RefreshTokenUseCase {
     public Mono<String> validateAndRotate(String rawToken) {
         String hash = this.sha256(rawToken);
         return repository.findByTokenHash(hash)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("Invalid refresh token")))
+                .switchIfEmpty(Mono.error(new ValidateAndRotateException()))
                 .flatMap(rt -> {
-                    if (RefreshTokenDomainService.validateToken(rt, Instant.now())) {
-                        return Mono.error(new IllegalArgumentException("Refresh token invalid"));
-                    }
-                    RefreshTokenModel revoked = RefreshTokenDomainService.revoke(rt);
+                    RefreshTokenDomainService.validateToken(rt, Instant.now()); // <-- el dominio valida si es correcto
+                                                                                // o no el refresh token
+
+                    RefreshTokenModel revoked = RefreshTokenDomainService.revoke(rt); // <- el dominio revoca la copia
 
                     return repository.save(revoked).then(this.createRefreshToken(rt.getUserId()));
                 });
@@ -75,7 +76,7 @@ public class RefreshTokenUseCaseImp implements RefreshTokenUseCase {
     public Mono<Void> revoke(String rawToken) {
         String hash = this.sha256(rawToken);
         return repository.findByTokenHash(hash)
-                .flatMap(rt -> repository.save(rt.revokedCopy())).then();
+                .flatMap(rt -> repository.save(rt.revoke())).then();
     }
 
     private String randomBase64(int bytes) {
