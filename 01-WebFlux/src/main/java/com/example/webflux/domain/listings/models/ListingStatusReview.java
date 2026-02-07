@@ -1,5 +1,7 @@
 package com.example.webflux.domain.listings.models;
 
+import com.example.webflux.domain.listings.exceptions.InvalidStateException;
+
 public enum ListingStatusReview {
     DRAFT {
         @Override
@@ -36,14 +38,28 @@ public enum ListingStatusReview {
     REJECTED;
 
     // default
-    public ListingStatusReview submit() { throw invalid(); }
-    public ListingStatusReview approve() { throw invalid(); }
-    public ListingStatusReview requestFix() { throw invalid(); }
-    public ListingStatusReview reject() { throw invalid(); }
-    public ListingStatusReview resubmit() { throw invalid(); }
+    public ListingStatusReview submit() {
+        throw invalid("");
+    }
 
-    private RuntimeException invalid() {
-        return new IllegalStateException("Invalid transition");
+    public ListingStatusReview approve() {
+        throw invalid("");
+    }
+
+    public ListingStatusReview requestFix() {
+        throw invalid("");
+    }
+
+    public ListingStatusReview reject() {
+        throw invalid("");
+    }
+
+    public ListingStatusReview resubmit() {
+        throw invalid("");
+    }
+
+    private RuntimeException invalid(String action) {
+        return new InvalidStateException(this, action);
     }
 }
 
@@ -64,11 +80,12 @@ public enum ListingStatusReview {
  * 
  * Arbol de estados
  * 
- * Estado inicial PENDING -> ISSUE -> SUCCESFULL  O REFUSED
+ * Estado inicial PENDING -> ISSUE -> SUCCESFULL O REFUSED
  * 
- * O: 
+ * O:
  * 
- * ESTADO INICIAL PENDING -> SUCCESFULL O REFUSED // rechazado o aceptado directamente sin pasar por ISSUE
+ * ESTADO INICIAL PENDING -> SUCCESFULL O REFUSED // rechazado o aceptado
+ * directamente sin pasar por ISSUE
  * 
  * 
  * 
