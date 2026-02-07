@@ -1,5 +1,7 @@
 package com.example.webflux.application.listings.command;
 
-public class SuspendListingCommand {
-    
+import java.util.UUID;
+
+public record SuspendListingCommand(UUID listingId) {
+
 }

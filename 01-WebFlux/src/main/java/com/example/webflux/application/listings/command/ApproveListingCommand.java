@@ -1,5 +1,7 @@
 package com.example.webflux.application.listings.command;
 
-public class ApproveListingCommand {
-    
+import java.util.UUID;
+
+public record ApproveListingCommand(UUID listingId) {
+
 }
