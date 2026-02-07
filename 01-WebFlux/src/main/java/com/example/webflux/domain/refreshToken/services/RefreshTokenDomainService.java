@@ -2,19 +2,20 @@ package com.example.webflux.domain.refreshToken.services;
 
 import java.time.Instant;
 
+import com.example.webflux.domain.refreshToken.exceptions.RefreshTokenExpiredException;
+import com.example.webflux.domain.refreshToken.exceptions.RefreshTokenRevokedException;
 import com.example.webflux.domain.refreshToken.models.RefreshTokenModel;
 
 public class RefreshTokenDomainService {
 
-    public static boolean validateToken(RefreshTokenModel token, Instant now) {
+    public static void validateToken(RefreshTokenModel token, Instant now) {
         if (token.isRevoked()) {
-            return true;
+            throw new RefreshTokenRevokedException();
         }
 
         if (token.isExpired(now)) {
-            return true;
+            throw new RefreshTokenExpiredException();
         }
-        return false;
     }
 
     public static RefreshTokenModel revoke(RefreshTokenModel token) {
