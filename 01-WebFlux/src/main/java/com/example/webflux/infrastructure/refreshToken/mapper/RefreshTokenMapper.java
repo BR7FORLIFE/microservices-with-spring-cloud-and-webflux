@@ -6,7 +6,7 @@ import com.example.webflux.infrastructure.refreshToken.persistence.RefreshTokenE
 public class RefreshTokenMapper {
 
     public static RefreshTokenModel toDomain(RefreshTokenEntity refreshTokenEntity) {
-        return new RefreshTokenModel(refreshTokenEntity.getId(), refreshTokenEntity.getUserId(),
+        return RefreshTokenModel.create(refreshTokenEntity.getId(), refreshTokenEntity.getUserId(),
                 refreshTokenEntity.getTokenHash(), refreshTokenEntity.getExpiredAt(), refreshTokenEntity.isRevoked(),
                 refreshTokenEntity.getCreateAt());
     }

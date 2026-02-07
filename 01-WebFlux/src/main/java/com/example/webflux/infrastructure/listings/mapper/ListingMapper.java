@@ -1,6 +1,7 @@
 package com.example.webflux.infrastructure.listings.mapper;
 
 import com.example.webflux.domain.listings.models.ListingModelDomain;
+import com.example.webflux.domain.listings.models.ListingPublicationStatus;
 import com.example.webflux.domain.listings.models.ListingStatusReview;
 import com.example.webflux.infrastructure.listings.persistence.ListingEntity;
 
@@ -14,7 +15,8 @@ public class ListingMapper {
                 listingEntity.getPrice(),
                 listingEntity.getCurrency(),
                 listingEntity.getIsActive(),
-                ListingStatusReview.valueOf(listingEntity.getStatus()),
+                ListingStatusReview.valueOf(listingEntity.getStatusReview()),
+                ListingPublicationStatus.valueOf(listingEntity.getStatusPublication()),
                 listingEntity.getCreateAt(),
                 listingEntity.getUpdateAt());
     }
@@ -26,10 +28,9 @@ public class ListingMapper {
         listingEntity.setUserId(listingModelDomain.getUserId());
         listingEntity.setPrice(listingModelDomain.getPrice());
         listingEntity.setCurrency(listingModelDomain.getCurrency());
-        listingEntity.setIsActive(listingModelDomain.getIsactive());
-        listingEntity.setStatus(listingModelDomain.getStatus().name());
-        listingEntity.setCreateAt(listingModelDomain.getCreateAt());
-        listingEntity.setUpdateAt(listingModelDomain.getUpdateAt());
+        listingEntity.setIsActive(listingModelDomain.getIsActive());
+        listingEntity.setStatusReview(listingModelDomain.getReviewStatus().toString());
+        listingEntity.setStatusPublication(listingModelDomain.getPublicationStatus().toString());
 
         return listingEntity;
     }
