@@ -3,40 +3,72 @@ package com.example.webflux.domain.listings.models;
 import java.time.Instant;
 import java.util.UUID;
 
+import com.example.webflux.domain.listings.exceptions.InvalidStateException;
+
 public final class ListingModelDomain {
     private final UUID listingId;
     private final UUID productId;
     private final UUID userId;
     private final Double price;
     private final String currency;
-    private final Boolean isactive;
-    private final ListingStatusReview status;
-    private final Instant createAt;
-    private final Instant updateAt;
 
-    private ListingModelDomain(UUID listingId, UUID productId, UUID userId, Double price, String currency,
-            Boolean isactive, ListingStatusReview status,
-            Instant createAt, Instant updateAt) {
+    private final Boolean isActive;
+
+    private final ListingStatusReview reviewStatus;
+    private final ListingPublicationStatus publicationStatus;
+
+    private final Instant createdAt;
+    private final Instant updatedAt;
+
+    private ListingModelDomain(
+            UUID listingId,
+            UUID productId,
+            UUID userId,
+            Double price,
+            String currency,
+            Boolean isActive,
+            ListingStatusReview reviewStatus,
+            ListingPublicationStatus publicationStatus,
+            Instant createdAt,
+            Instant updatedAt) {
         this.listingId = listingId;
         this.productId = productId;
         this.userId = userId;
         this.price = price;
         this.currency = currency;
-        this.isactive = isactive;
-        this.status = status;
-        this.createAt = createAt;
-        this.updateAt = updateAt;
+        this.isActive = isActive;
+        this.reviewStatus = reviewStatus;
+        this.publicationStatus = publicationStatus;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
-    public static ListingModelDomain createNew(UUID listingId, UUID productId, UUID userId, Double price,
+    // Factory for persistence / rehydration
+    public static ListingModelDomain createNew(
+            UUID listingId,
+            UUID productId,
+            UUID userId,
+            Double price,
             String currency,
-            Boolean isactive,
-            ListingStatusReview status,
-            Instant createAt, Instant updateAt) {
-        return new ListingModelDomain(listingId, productId, userId, price, currency, isactive, status, createAt,
-                updateAt);
+            Boolean isActive,
+            ListingStatusReview reviewStatus,
+            ListingPublicationStatus publicationStatus,
+            Instant createdAt,
+            Instant updatedAt) {
+        return new ListingModelDomain(
+                listingId,
+                productId,
+                userId,
+                price,
+                currency,
+                isActive,
+                reviewStatus,
+                publicationStatus,
+                createdAt,
+                updatedAt);
     }
 
+    // Factory for user creation
     public static ListingModelDomain createDraft(
             UUID productId,
             UUID userId,
@@ -51,44 +83,91 @@ public final class ListingModelDomain {
                 currency,
                 false,
                 ListingStatusReview.DRAFT,
+                ListingPublicationStatus.INACTIVE,
                 now,
                 now);
     }
 
-    public ListingModelDomain submit() {
-        return changeStatus(status.submit());
+    // Admin moderations
+
+    public ListingModelDomain submitForReview() {
+        return changeReviewStatus(reviewStatus.submit());
     }
 
-    public ListingModelDomain approve() {
-        return changeStatus(status.approve());
+    public ListingModelDomain approveReview() {
+        return changeReviewStatus(reviewStatus.approve());
     }
 
     public ListingModelDomain requestFix() {
-        return changeStatus(status.requestFix());
+        return changeReviewStatus(reviewStatus.requestFix());
     }
 
-    public ListingModelDomain reject() {
-        return changeStatus(status.reject());
+    public ListingModelDomain rejectReview() {
+        return changeReviewStatus(reviewStatus.reject());
     }
 
-    private ListingModelDomain changeStatus(ListingStatusReview newStatus) {
+    private ListingModelDomain changeReviewStatus(ListingStatusReview newStatus) {
         return new ListingModelDomain(
                 listingId,
                 productId,
                 userId,
                 price,
                 currency,
-                isactive,
+                isActive,
                 newStatus,
-                createAt,
+                publicationStatus,
+                createdAt,
                 Instant.now());
     }
 
+    // publication workflow (VISIBLE)
+    public ListingModelDomain publish() {
+        if (reviewStatus != ListingStatusReview.PUBLISHED) {
+            throw new InvalidStateException(reviewStatus, "publish");
+        }
+        return changePublicationStatus(ListingPublicationStatus.ACTIVE);
+    }
+
+    public ListingModelDomain suspend() {
+        return changePublicationStatus(ListingPublicationStatus.SUSPENDED);
+    }
+
+    private ListingModelDomain changePublicationStatus(ListingPublicationStatus newStatus) {
+        return new ListingModelDomain(
+                listingId,
+                productId,
+                userId,
+                price,
+                currency,
+                isActive,
+                reviewStatus,
+                newStatus,
+                createdAt,
+                Instant.now());
+    }
+
+    // getters
     public UUID getListingId() {
         return listingId;
     }
 
-    public UUID getProductId() {
+    public ListingStatusReview getReviewStatus() {
+        return reviewStatus;
+    }
+
+    public ListingPublicationStatus getPublicationStatus() {
+        return publicationStatus;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+        public UUID getProductId() {
         return productId;
     }
 
@@ -104,20 +183,7 @@ public final class ListingModelDomain {
         return currency;
     }
 
-    public Boolean getIsactive() {
-        return isactive;
+    public Boolean getIsActive() {
+        return isActive;
     }
-
-    public ListingStatusReview getStatus() {
-        return status;
-    }
-
-    public Instant getCreateAt() {
-        return createAt;
-    }
-
-    public Instant getUpdateAt() {
-        return updateAt;
-    }
-
 }
