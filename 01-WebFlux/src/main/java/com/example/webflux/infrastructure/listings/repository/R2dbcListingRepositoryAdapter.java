@@ -1,5 +1,7 @@
 package com.example.webflux.infrastructure.listings.repository;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Repository;
 
 import com.example.webflux.domain.listings.models.ListingModelDomain;
@@ -21,6 +23,12 @@ public class R2dbcListingRepositoryAdapter implements ListingDomainRepositoryPor
     @Override
     public Mono<ListingModelDomain> save(ListingModelDomain listing) {
         return listingRepository.save(ListingMapper.toEntity(listing))
+                .map(ListingMapper::toDomain);
+    }
+
+    @Override
+    public Mono<ListingModelDomain> findByListingId(UUID listingId) {
+        return listingRepository.findById(listingId)
                 .map(ListingMapper::toDomain);
     }
 
