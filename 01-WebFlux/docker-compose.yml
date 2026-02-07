@@ -2,17 +2,17 @@ name: 01-webflux-compose
 services:
   postgres:
     image: postgres:17
-    container_name: postgresql-db
+    container_name: marketplace-db
     environment:
-      POSTGRES_DB: microservicedb
-      POSTGRES_USER: br7forlife
-      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
       - backend-net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U br7forlife -d microservicedb"]
+      test: ["CMD-SHELL", "pg_isready -U br7forlife -d marketplace-db"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -27,14 +27,14 @@ services:
       - "8080:8080"
     environment:
       #R2DBC
-      SPRING_R2DBC_URL: r2dbc:postgresql://postgres:5432/microservicedb
-      SPRING_R2DBC_USERNAME: br7forlife
-      SPRING_R2DBC_PASSWORD: 12345
+      SPRING_R2DBC_URL: ${DB_R2DBC_URL}
+      SPRING_R2DBC_USERNAME: ${DB_USERNAME}
+      SPRING_R2DBC_PASSWORD: ${DB_PASSWORD}
 
       #FLYWAY
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/microservicedb
-      SPRING_DATASOURCE_USERNAME: br7forlife
-      SPRING_DATASOURCE_PASSWORD: 12345
+      SPRING_DATASOURCE_URL: ${DB_JDBC_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
     networks:
       - backend-net
 

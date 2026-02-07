@@ -45,6 +45,8 @@ CREATE TABLE IF NOT EXISTS public.listings
     create_at timestamp without time zone DEFAULT now(),
     update_at timestamp without time zone DEFAULT now(),
     user_id uuid NOT NULL,
+    status_review character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    status_publication character varying(10) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT listings_pkey PRIMARY KEY (listing_id)
 );
 
@@ -155,15 +157,6 @@ ALTER TABLE IF EXISTS public.catalog_items
     ON DELETE NO ACTION;
 CREATE INDEX IF NOT EXISTS idx_catalog_items_product
     ON public.catalog_items(product_id);
-
-
-ALTER TABLE IF EXISTS public.inventories
-    ADD CONSTRAINT fk_inventories_listings FOREIGN KEY (listing_id)
-    REFERENCES public.listings (listing_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION;
-CREATE INDEX IF NOT EXISTS unique_inventory_per_listings
-    ON public.inventories(listing_id);
 
 
 ALTER TABLE IF EXISTS public.listings

@@ -34,3 +34,6 @@ build/
 
 ### enviroments
 python-user-registers/app
+
+### enviroments variables
+src/main/java/com/example/webflux/.env
