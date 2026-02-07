@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.webflux.application.orders.commands.CreateOrderCommand;
 import com.example.webflux.application.orders.commands.CreateOrderCommandResult;
+import com.example.webflux.application.orders.exceptions.CreateOrderException;
 import com.example.webflux.application.orders.usecases.OrderUseCases;
 import com.example.webflux.domain.auth.ports.UserDomainRepositoryPort;
 import com.example.webflux.domain.orders.models.OrderModelDomain;
@@ -32,10 +33,10 @@ public class OrderUseCaseImp implements OrderUseCases {
          */
         return orderRepositoryPort.findByOrderId(cmd.orderId())
                 .flatMap(existing -> Mono.<CreateOrderCommandResult>error(
-                        new IllegalStateException("order already exists!")))
+                        new CreateOrderException()))
                 .switchIfEmpty(
                         userDomainRepositoryPort.findByUserId(cmd.userId())
-                                .switchIfEmpty(Mono.error(new IllegalStateException("user not found!")))
+                                .switchIfEmpty(Mono.error(new CreateOrderException()))
                                 .flatMap(user -> {
                                     OrderModelDomain orderModel = new OrderModelDomain(
                                             cmd.orderId(),

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.example.webflux.application.auth.command.RegisterUserCommand;
 import com.example.webflux.application.auth.command.RegisterUserCommandResult;
 import com.example.webflux.application.auth.command.VerifiedUserCommandResult;
+import com.example.webflux.application.auth.exceptions.RegisterUserException;
+import com.example.webflux.application.auth.exceptions.VerifiedUserException;
 import com.example.webflux.application.auth.usecases.AuthUseCase;
 import com.example.webflux.domain.auth.models.UserModelDomain;
 import com.example.webflux.domain.auth.ports.UserDomainRepositoryPort;
@@ -29,7 +31,7 @@ public class AuthUseCaseImp implements AuthUseCase {
     public Mono<VerifiedUserCommandResult> verifyUser(UUID userId) {
         return userPort.findByUserId(userId)
                 .map(user -> new VerifiedUserCommandResult(user))
-                .switchIfEmpty(Mono.error(new IllegalStateException("user not found!")));
+                .switchIfEmpty(Mono.error(new VerifiedUserException()));
     }
 
     @Override
@@ -42,6 +44,6 @@ public class AuthUseCaseImp implements AuthUseCase {
                     return userPort.save(userModel)
                             .map(saved -> new RegisterUserCommandResult(saved.getId(), saved.getUsername()));
                 }).switchIfEmpty(
-                        Mono.<RegisterUserCommandResult>error(new IllegalStateException("user already register!")));
+                        Mono.<RegisterUserCommandResult>error(new RegisterUserException()));
     }
 }

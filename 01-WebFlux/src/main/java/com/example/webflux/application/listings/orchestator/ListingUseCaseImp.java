@@ -1,8 +1,5 @@
 package com.example.webflux.application.listings.orchestator;
 
-import java.time.Instant;
-import java.util.UUID;
-
 import org.springframework.stereotype.Service;
 
 import com.example.webflux.application.listings.command.ApproveListingCommand;
@@ -15,11 +12,12 @@ import com.example.webflux.application.listings.command.RejectedListingCommand;
 import com.example.webflux.application.listings.command.RejectedListingCommandResult;
 import com.example.webflux.application.listings.command.SuspendListingCommand;
 import com.example.webflux.application.listings.command.SuspendListingCommandResult;
+import com.example.webflux.application.listings.exceptions.ApproveListingException;
+import com.example.webflux.application.listings.exceptions.CreateListingException;
+import com.example.webflux.application.listings.exceptions.PublishListingException;
+import com.example.webflux.application.listings.exceptions.SuspendListingException;
 import com.example.webflux.application.listings.usecases.ListingUseCase;
-import com.example.webflux.application.orders.commands.CreateOrderCommandResult;
-import com.example.webflux.domain.auth.ports.UserDomainRepositoryPort;
 import com.example.webflux.domain.listings.models.ListingModelDomain;
-import com.example.webflux.domain.listings.models.ListingStatusReview;
 import com.example.webflux.domain.listings.ports.ListingDomainRepositoryPort;
 import com.example.webflux.domain.products.models.ProductModelDomain;
 import com.example.webflux.domain.products.ports.ProductDomainRepositoryPort;
@@ -47,8 +45,7 @@ public class ListingUseCaseImp implements ListingUseCase {
 
                     if (exists) {
                         return Mono.error(
-                                new IllegalArgumentException(
-                                        "The current product exists! please register another product with different sku!"));
+                                new CreateListingException());
                     }
 
                     return productPort.save(
@@ -70,51 +67,53 @@ public class ListingUseCaseImp implements ListingUseCase {
                             })
                             .map(listing -> new CreateListingCommandResult(
                                     listing.getListingId(),
-                                    listing.getStatus().name(),
+                                    listing.getReviewStatus().name(),
                                     "Listing create succesfull!"));
                 });
     }
 
     @Override
     public Mono<ApproveListingCommandResult> approveListing(ApproveListingCommand cmd) {
-        return null;
+        return listingPort.findByListingId(cmd.listingId())
+                .switchIfEmpty(Mono.error(new ApproveListingException()))
+                .map(ListingModelDomain::approveReview)
+                .flatMap(listingPort::save)
+                .map(newListing -> new ApproveListingCommandResult())
+                .onErrorMap(IllegalStateException.class,
+                        e -> new IllegalStateException("error to process the approve state listing!"));
+
     }
 
     @Override
     public Mono<SuspendListingCommandResult> suspendListing(SuspendListingCommand cmd) {
-        return null;
+        return listingPort.findByListingId(cmd.listingId())
+                .switchIfEmpty(Mono.error(new SuspendListingException()))
+                .map(ListingModelDomain::suspend)
+                .flatMap(listingPort::save)
+                .map(newListing -> new SuspendListingCommandResult())
+                .onErrorMap(IllegalStateException.class,
+                        e -> new IllegalStateException("Error to process the suspend state listing"));
     }
 
     @Override
     public Mono<RejectedListingCommandResult> rejectedListing(RejectedListingCommand cmd) {
-        return null;
+        return listingPort.findByListingId(cmd.listingId())
+                .switchIfEmpty(Mono.error(new SuspendListingException()))
+                .map(ListingModelDomain::rejectReview)
+                .flatMap(listingPort::save)
+                .map(newListing -> new RejectedListingCommandResult())
+                .onErrorMap(IllegalStateException.class,
+                        e -> new IllegalStateException("Error to process the suspend state listing"));
     }
 
     @Override
     public Mono<PublishListingCommandResult> publishListing(PublishListingCommand cmd) {
-
-        // // Id generado para las distintas entidadesc
-        // UUID listingId = UUID.randomUUID();
-        // UUID productId = UUID.randomUUID();
-
-        // // fechas de creacion y actualizacion
-        // Instant createAt = Instant.now();
-        // Instant updateAt = Instant.now();
-
-        // // creamos las distintas entidades de dominio
-        // ProductModelDomain product = ProductModelDomain.createNew(productId,
-        // cmd.product().sku(), cmd.product().name(),
-        // cmd.product().shortDescription(), cmd.product().longDescription(),
-        // cmd.product().model());
-
-        // ListingModelDomain listing = ListingModelDomain.createNew(listingId,
-        // productId, cmd.userId(), cmd.price(),
-        // cmd.currency(), cmd.isActive(), createAt, updateAt);
-
-        // // retornamos el resultado
-        // return productPort.save(product)
-        // .then(listingPort.save(listing))
-        // .thenReturn(new PublishListingCommandResult());
-        return null;
+        return listingPort.findByListingId(cmd.listingId())
+                .switchIfEmpty(Mono.error(new PublishListingException()))
+                .map(ListingModelDomain::publish)
+                .flatMap(listingPort::save)
+                .map(newListing -> new PublishListingCommandResult())
+                .onErrorMap(IllegalStateException.class,
+                        e -> new IllegalStateException("Error to process the suspend state listing"));
     }
 }
