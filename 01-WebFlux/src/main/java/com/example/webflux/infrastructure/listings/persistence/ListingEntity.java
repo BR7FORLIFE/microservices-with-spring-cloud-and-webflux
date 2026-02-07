@@ -18,7 +18,7 @@ public class ListingEntity {
 
     @Column("product_id")
     private UUID productId;
-    
+
     @Column("user_id")
     private UUID userId;
 
@@ -31,8 +31,11 @@ public class ListingEntity {
     @Column("is_active")
     private Boolean isActive;
 
-    @Column("status")
-    private String status;
+    @Column("status_review")
+    private String statusReview;
+
+    @Column("status_publication")
+    private String statusPublication;
 
     @Column("create_at")
     private Instant createAt;

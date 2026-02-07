@@ -19,6 +19,6 @@ public class RefreshTokenDomainService {
     }
 
     public static RefreshTokenModel revoke(RefreshTokenModel token) {
-        return token.revokedCopy();
+        return token.revoke();
     }
 }
