@@ -1,4 +1,4 @@
-package com.example.webflux.infrastructure.security.config;
+package com.example.webflux.infrastructure.config;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;

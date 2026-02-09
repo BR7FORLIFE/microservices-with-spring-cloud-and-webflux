@@ -3,6 +3,27 @@
 BEGIN;
 
 
+CREATE TABLE IF NOT EXISTS public.asset_media
+(
+    id uuid NOT NULL DEFAULT gen_random_uuid(),
+    owner_id uuid NOT NULL,
+    owner_type character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    cloud_public_id character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    format character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    resource_type character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    storage_type character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    bytes bigint NOT NULL,
+    width integer,
+    height integer,
+    url text COLLATE pg_catalog."default" NOT NULL,
+    secure_url text COLLATE pg_catalog."default" NOT NULL,
+    "position" integer DEFAULT 0,
+    is_cover boolean NOT NULL DEFAULT false,
+    created_at timestamp without time zone NOT NULL DEFAULT now(),
+    deleted_at timestamp without time zone,
+    CONSTRAINT asset_media_pkey PRIMARY KEY (id)
+);
+
 CREATE TABLE IF NOT EXISTS public.catalog_items
 (
     catalog_id uuid NOT NULL,
@@ -92,18 +113,6 @@ CREATE TABLE IF NOT EXISTS public.products
     sku text COLLATE pg_catalog."default",
     CONSTRAINT products_pkey PRIMARY KEY (product_id),
     CONSTRAINT products_sku_key UNIQUE (sku)
-);
-
-CREATE TABLE IF NOT EXISTS public.products_variants
-(
-    atribute_id integer NOT NULL DEFAULT nextval('atributies_design_atribute_id_seq'::regclass),
-    image_url text COLLATE pg_catalog."default" NOT NULL,
-    gallery jsonb,
-    thumbnail_url text COLLATE pg_catalog."default",
-    create_at timestamp without time zone DEFAULT now(),
-    update_at timestamp without time zone DEFAULT now(),
-    product_id uuid NOT NULL,
-    CONSTRAINT atributies_design_pkey PRIMARY KEY (atribute_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.references_products
@@ -203,13 +212,6 @@ ALTER TABLE IF EXISTS public.orders
 ALTER TABLE IF EXISTS public.payments
     ADD CONSTRAINT fk_payments_orders FOREIGN KEY (order_id)
     REFERENCES public.orders (order_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION;
-
-
-ALTER TABLE IF EXISTS public.products_variants
-    ADD CONSTRAINT fk_products_variants_product FOREIGN KEY (product_id)
-    REFERENCES public.products (product_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 

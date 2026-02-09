@@ -1,4 +1,4 @@
-package com.example.webflux.infrastructure.security.config;
+package com.example.webflux.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,5 @@
 name: 01-webflux-compose
+
 services:
   postgres:
     image: postgres:17
@@ -12,7 +13,7 @@ services:
     networks:
       - backend-net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U br7forlife -d marketplace-db"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -26,22 +27,22 @@ services:
     ports:
       - "8080:8080"
     environment:
-      #R2DBC
+      # R2DBC
       SPRING_R2DBC_URL: ${DB_R2DBC_URL}
       SPRING_R2DBC_USERNAME: ${DB_USERNAME}
       SPRING_R2DBC_PASSWORD: ${DB_PASSWORD}
 
-      #FLYWAY
-      SPRING_DATASOURCE_URL: ${DB_JDBC_URL}
-      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      # Flyway (JDBC)
+      SPRING_FLYWAY_URL: ${DB_JDBC_URL}
+      SPRING_FLYWAY_USER: ${DB_USERNAME}
+      SPRING_FLYWAY_PASSWORD: ${DB_PASSWORD}
     networks:
       - backend-net
 
   simulator:
-    build: ./python-users-registers
+    build: python-user-registers
     container_name: register-users-python
-    depends_on: 
+    depends_on:
       - backend
     networks:
       - backend-net
