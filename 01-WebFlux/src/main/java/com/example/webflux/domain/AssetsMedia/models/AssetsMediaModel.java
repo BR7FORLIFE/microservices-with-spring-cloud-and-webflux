@@ -5,24 +5,24 @@ import java.util.UUID;
 
 public final class AssetsMediaModel {
 
-    public final UUID assetsMediaId;
-    public final UUID ownerId;
-    public final String ownerType;
-    public final String cloudPublicId;
-    public final String format;
-    public final String resourceType;
-    public final String storageType;
-    public final Integer numberBytes;
-    public final Integer width;
-    public final Integer height;
-    public final String url;
-    public final String secureUrl;
-    public final Integer position;
-    public final Boolean isCover;
-    public final Instant createAt;
-    public final Instant deleteAt;
+    private final UUID assetsMediaId;
+    private final UUID ownerId;
+    private final OwnerMediaType ownerType;
+    private final String cloudPublicId;
+    private final String format;
+    private final String resourceType;
+    private final String storageType;
+    private final Integer numberBytes;
+    private final Integer width;
+    private final Integer height;
+    private final String url;
+    private final String secureUrl;
+    private final Integer position;
+    private final Boolean isCover;
+    private final Instant createAt;
+    private final Instant deleteAt;
 
-    private AssetsMediaModel(UUID assetsMediaId, UUID ownerId, String ownerType, String cloudPublicId, String format,
+    private AssetsMediaModel(UUID assetsMediaId, UUID ownerId, OwnerMediaType ownerType, String cloudPublicId, String format,
             String resourceType, String storageType, Integer numberBytes, Integer width, Integer height, String url,
             String secureUrl, Integer position, Boolean isCover, Instant createAt, Instant deleteAt) {
         this.assetsMediaId = assetsMediaId;
@@ -43,7 +43,7 @@ public final class AssetsMediaModel {
         this.deleteAt = deleteAt;
     }
 
-    public static AssetsMediaModel createNew(UUID assetsMediaId, UUID ownerId, String ownerType, String cloudPublicId,
+    public static AssetsMediaModel createNew(UUID assetsMediaId, UUID ownerId, OwnerMediaType ownerType, String cloudPublicId,
             String format,
             String resourceType, String storageType, Integer numberBytes, Integer width, Integer height, String url,
             String secureUrl, Integer position, Boolean isCover, Instant createAt, Instant deleteAt) {
@@ -60,7 +60,7 @@ public final class AssetsMediaModel {
         return ownerId;
     }
 
-    public String getOwnerType() {
+    public OwnerMediaType getOwnerType() {
         return ownerType;
     }
 
