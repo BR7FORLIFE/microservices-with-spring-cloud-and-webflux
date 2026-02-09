@@ -3,14 +3,22 @@ package com.example.webflux.infrastructure.listings.controller;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.webflux.application.AssetsMedia.command.UploadMediaCommand;
+import com.example.webflux.application.AssetsMedia.dto.response.UploadMediaResponseDto;
+import com.example.webflux.application.AssetsMedia.orchestator.AssetsMediaUseCaseImp;
+import com.example.webflux.application.AssetsMedia.usecases.AssetsMediaUseCase;
 import com.example.webflux.application.listings.command.ApproveListingCommand;
 import com.example.webflux.application.listings.command.CreateListingCommand;
 import com.example.webflux.application.listings.draft.ProductDraft;
@@ -25,19 +33,26 @@ import com.example.webflux.application.listings.dto.response.PublishListingRespo
 import com.example.webflux.application.listings.dto.response.RejectedListingResponseDto;
 import com.example.webflux.application.listings.dto.response.SuspendListingResponseDto;
 import com.example.webflux.application.listings.orchestator.ListingUseCaseImp;
+import com.example.webflux.infrastructure.AssetsMedia.controller.FileParserConverter;
 import com.example.webflux.infrastructure.security.CustomUserDetails;
 
 import jakarta.validation.Valid;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @RestController
 @RequestMapping("/listing")
 public class ListingController {
 
     private final ListingUseCaseImp listingUseCaseImp;
+    private final FileParserConverter fileParserConverter;
+    private final AssetsMediaUseCaseImp assetsMediaUseCaseImp;
 
-    public ListingController(ListingUseCaseImp listingUseCaseImp) {
+    public ListingController(ListingUseCaseImp listingUseCaseImp, FileParserConverter converter,
+            AssetsMediaUseCaseImp assetsMediaUseCaseImp) {
         this.listingUseCaseImp = listingUseCaseImp;
+        this.fileParserConverter = converter;
+        this.assetsMediaUseCaseImp = assetsMediaUseCaseImp;
     }
 
     /**
@@ -103,6 +118,20 @@ public class ListingController {
     @PostMapping("/suspend")
     public Mono<ResponseEntity<SuspendListingResponseDto>> rejectedListing(
             @RequestBody @Valid SuspendListingRequestDto dto) {
+        return null;
+    }
+
+    /**
+     * metodo para cargar las distintas imagenes o recursos para el listing actual
+     * 
+     */
+    @PostMapping(value = "/{listingId}/media", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Mono<ResponseEntity<UploadMediaResponseDto>> uploadAssetsMedia(
+            @RequestPart("file") FilePart part, Authentication authentication, @PathVariable UUID listingId) {
+
+        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+        UUID userId = details.getUserId();
+
         return null;
     }
 
