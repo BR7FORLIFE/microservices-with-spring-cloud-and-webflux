@@ -1,3 +1,3 @@
 spring:
-  application:
-    name: match-service
+  mongodb:
+    uri: mongodb://br7forlife:12345@localhost:27017/soccer?authSource=admin
