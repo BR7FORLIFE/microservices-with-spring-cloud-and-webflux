@@ -124,6 +124,7 @@
 			<version>2.3.2</version>
 			<scope>compile</scope>
 		</dependency>
+		
 
 >>>>>>> 6888eff (feat: create the 3 differents microservices)
 	</dependencies>
