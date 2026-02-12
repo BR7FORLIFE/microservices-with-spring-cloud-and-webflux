@@ -1,0 +1,8 @@
+### create a match
+
+POST http://localhost:8080/match HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "clasico americano"
+}
