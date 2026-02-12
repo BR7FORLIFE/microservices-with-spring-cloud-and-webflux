@@ -104,29 +104,22 @@
 			<scope>test</scope>
 		</dependency>
 
-<<<<<<< HEAD
+
 		<!-- Source: https://mvnrepository.com/artifact/com.cloudinary/cloudinary-core -->
-=======
->>>>>>> 6888eff (feat: create the 3 differents microservices)
 		<dependency>
 			<groupId>com.cloudinary</groupId>
 			<artifactId>cloudinary-core</artifactId>
 			<version>2.3.2</version>
 			<scope>compile</scope>
 		</dependency>
-<<<<<<< HEAD
-=======
 
-				<!-- Source: https://mvnrepository.com/artifact/com.cloudinary/cloudinary-http5 -->
+<!-- Source: https://mvnrepository.com/artifact/com.cloudinary/cloudinary-http5 -->
 		<dependency>
 			<groupId>com.cloudinary</groupId>
 			<artifactId>cloudinary-http5</artifactId>
 			<version>2.3.2</version>
 			<scope>compile</scope>
 		</dependency>
-		
-
->>>>>>> 6888eff (feat: create the 3 differents microservices)
 	</dependencies>
 
 	<build>
