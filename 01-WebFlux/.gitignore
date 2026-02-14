@@ -37,3 +37,5 @@ python-user-registers/app
 
 ### enviroments variables
 .env
+microservices-with-spring-cloud-and-webflux/01-WebFlux/.env
+env
