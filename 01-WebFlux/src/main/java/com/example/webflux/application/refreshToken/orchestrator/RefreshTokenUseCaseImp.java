@@ -49,7 +49,7 @@ public class RefreshTokenUseCaseImp implements RefreshTokenUseCase {
                     String hash = this.sha256(raw); // <-- Obligatorio hasearlo para seguridad por si roban la DB
                     Instant now = Instant.now();
                     Instant expiredAt = now.plus(ttlDuration);
-                    RefreshTokenModel refreshtokenModel = RefreshTokenModel.create(userId, userId, hash,
+                    RefreshTokenModel refreshtokenModel = RefreshTokenModel.create(jti, userId, hash,
                             expiredAt, false, expiredAt);
                     return Tuples.of(refreshtokenModel, raw);
                 }).flatMap(tuple -> {
