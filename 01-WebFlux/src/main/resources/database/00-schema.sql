@@ -149,7 +149,8 @@ CREATE TABLE IF NOT EXISTS public.users
     username character varying(30) COLLATE pg_catalog."default" NOT NULL,
     email character varying(30) COLLATE pg_catalog."default" NOT NULL,
     password_hash text COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT users_pkey PRIMARY KEY (user_id)
+    CONSTRAINT users_pkey PRIMARY KEY (user_id),
+    CONSTRAINT user_email_unique UNIQUE (email)
 );
 
 ALTER TABLE IF EXISTS public.catalog_items
@@ -227,13 +228,13 @@ ALTER TABLE IF EXISTS public.refresh_token
     ADD CONSTRAINT fk_user_refreshtoken FOREIGN KEY (user_id)
     REFERENCES public.users (user_id) MATCH SIMPLE
     ON UPDATE NO ACTION
-    ON DELETE NO ACTION;
+    ON DELETE CASCADE;
 
 
 ALTER TABLE IF EXISTS public.rols
     ADD CONSTRAINT fk_user_rols FOREIGN KEY (user_id)
     REFERENCES public.users (user_id) MATCH SIMPLE
     ON UPDATE NO ACTION
-    ON DELETE NO ACTION;
+    ON DELETE CASCADE;
 
 END;
