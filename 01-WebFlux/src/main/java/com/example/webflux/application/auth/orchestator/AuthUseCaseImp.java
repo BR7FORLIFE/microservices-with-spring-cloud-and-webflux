@@ -5,12 +5,19 @@ import java.util.UUID;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.webflux.application.auth.command.LoginUserCommand;
+import com.example.webflux.application.auth.command.LoginUserCommandResult;
 import com.example.webflux.application.auth.command.RegisterUserCommand;
 import com.example.webflux.application.auth.command.RegisterUserCommandResult;
 import com.example.webflux.application.auth.command.VerifiedUserCommandResult;
-import com.example.webflux.application.auth.exceptions.RegisterUserException;
+import com.example.webflux.application.auth.exceptions.IncorrectPasswordException;
+import com.example.webflux.application.auth.exceptions.UserAlreadyRegisterException;
+import com.example.webflux.application.auth.exceptions.UserNotFoundException;
 import com.example.webflux.application.auth.exceptions.VerifiedUserException;
+import com.example.webflux.application.auth.ports.UserJwtPort;
+import com.example.webflux.application.auth.ports.UserSecurityPort;
 import com.example.webflux.application.auth.usecases.AuthUseCase;
+import com.example.webflux.application.refreshToken.usecases.RefreshTokenUseCase;
 import com.example.webflux.domain.auth.models.UserModelDomain;
 import com.example.webflux.domain.auth.ports.UserDomainRepositoryPort;
 
@@ -20,11 +27,18 @@ import reactor.core.publisher.Mono;
 public class AuthUseCaseImp implements AuthUseCase {
 
     private final UserDomainRepositoryPort userPort;
+    private final UserSecurityPort userSecurityPort;
+    private final UserJwtPort jwtPort;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenUseCase refreshTokenUseCase;
 
-    public AuthUseCaseImp(PasswordEncoder passwordEncoder, UserDomainRepositoryPort port) {
+    public AuthUseCaseImp(PasswordEncoder passwordEncoder, UserDomainRepositoryPort port,
+            UserSecurityPort userSecurityPort, UserJwtPort userJwtPort, RefreshTokenUseCase refreshTokenUseCase) {
         this.passwordEncoder = passwordEncoder;
         this.userPort = port;
+        this.userSecurityPort = userSecurityPort;
+        this.jwtPort = userJwtPort;
+        this.refreshTokenUseCase = refreshTokenUseCase;
     }
 
     @Override
@@ -35,15 +49,39 @@ public class AuthUseCaseImp implements AuthUseCase {
     }
 
     @Override
-    public Mono<RegisterUserCommandResult> execute(RegisterUserCommand cmd) {
+    public Mono<RegisterUserCommandResult> executeRegister(RegisterUserCommand cmd) {
+
         return userPort.findByUsername(cmd.username())
-                .flatMap(user -> {
+                .hasElement()
+                .flatMap(exists -> {
+                    if (exists) {
+                        return Mono
+                                .<RegisterUserCommandResult>error(new UserAlreadyRegisterException());
+                    }
+
                     String passwordHash = passwordEncoder.encode(cmd.password());
                     UserModelDomain userModel = UserModelDomain.register(cmd.username(), cmd.email(), passwordHash);
 
                     return userPort.save(userModel)
-                            .map(saved -> new RegisterUserCommandResult(saved.getId(), saved.getUsername()));
-                }).switchIfEmpty(
-                        Mono.<RegisterUserCommandResult>error(new RegisterUserException()));
+                            .map(saved -> new RegisterUserCommandResult(
+                                    saved.getId(),
+                                    saved.getUsername()));
+                });
     }
+
+    @Override
+    public Mono<LoginUserCommandResult> executeLogin(LoginUserCommand cmd) {
+        return userSecurityPort.findByEmail(cmd.email())
+                .switchIfEmpty(Mono.error(new UserNotFoundException()))
+                .flatMap(user -> {
+                    if (!passwordEncoder.matches(cmd.password(), user.password())) {
+                        return Mono.error(new IncorrectPasswordException());
+                    }
+
+                    return jwtPort.generateAccessToken(user)
+                            .flatMap(accessToken -> refreshTokenUseCase.createRefreshToken(user.userId())
+                                    .map(refreshRaw -> new LoginUserCommandResult(accessToken, refreshRaw)));
+                });
+    }
+
 }
