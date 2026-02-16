@@ -39,3 +39,4 @@ python-user-registers/app
 .env
 microservices-with-spring-cloud-and-webflux/01-WebFlux/.env
 env
+.env.sh
