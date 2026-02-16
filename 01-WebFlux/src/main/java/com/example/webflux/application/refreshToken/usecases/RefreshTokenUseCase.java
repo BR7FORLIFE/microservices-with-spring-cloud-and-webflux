@@ -8,4 +8,6 @@ public interface RefreshTokenUseCase {
     Mono<String> createRefreshToken(UUID userId);
 
     Mono<String> validateAndRotate(String rawToken);
+
+    Mono<Void> revoke(String rawToken);
 }
