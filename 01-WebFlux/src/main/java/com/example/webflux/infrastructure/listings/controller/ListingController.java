@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.webflux.application.AssetsMedia.command.UploadMediaCommand;
 import com.example.webflux.application.AssetsMedia.dto.response.UploadMediaResponseDto;
 import com.example.webflux.application.AssetsMedia.orchestator.AssetsMediaUseCaseImp;
-import com.example.webflux.application.AssetsMedia.usecases.AssetsMediaUseCase;
 import com.example.webflux.application.listings.command.ApproveListingCommand;
 import com.example.webflux.application.listings.command.CreateListingCommand;
 import com.example.webflux.application.listings.draft.ProductDraft;
@@ -32,25 +30,24 @@ import com.example.webflux.application.listings.dto.response.CreateListingRespon
 import com.example.webflux.application.listings.dto.response.PublishListingResponseDto;
 import com.example.webflux.application.listings.dto.response.RejectedListingResponseDto;
 import com.example.webflux.application.listings.dto.response.SuspendListingResponseDto;
-import com.example.webflux.application.listings.orchestator.ListingUseCaseImp;
+import com.example.webflux.application.listings.usecases.ListingUseCase;
 import com.example.webflux.infrastructure.AssetsMedia.controller.FileParserConverter;
 import com.example.webflux.infrastructure.security.CustomUserDetails;
 
 import jakarta.validation.Valid;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 @RestController
 @RequestMapping("/listing")
 public class ListingController {
 
-    private final ListingUseCaseImp listingUseCaseImp;
+    private final ListingUseCase listingUseCase;
     private final FileParserConverter fileParserConverter;
     private final AssetsMediaUseCaseImp assetsMediaUseCaseImp;
 
-    public ListingController(ListingUseCaseImp listingUseCaseImp, FileParserConverter converter,
+    public ListingController(ListingUseCase listingUseCase, FileParserConverter converter,
             AssetsMediaUseCaseImp assetsMediaUseCaseImp) {
-        this.listingUseCaseImp = listingUseCaseImp;
+        this.listingUseCase = listingUseCase;
         this.fileParserConverter = converter;
         this.assetsMediaUseCaseImp = assetsMediaUseCaseImp;
     }
@@ -83,7 +80,7 @@ public class ListingController {
 
         CreateListingCommand cmd = new CreateListingCommand(userId, product, dto.price(), dto.currency(), false);
 
-        return listingUseCaseImp.createListing(cmd)
+        return listingUseCase.createListing(cmd)
                 .map(result -> ResponseEntity.status(HttpStatus.CREATED).body(new CreateListingResponseDto()));
     }
 
@@ -94,7 +91,7 @@ public class ListingController {
 
         ApproveListingCommand cmd = new ApproveListingCommand(dto.listingId());
 
-        return listingUseCaseImp.approveListing(cmd)
+        return listingUseCase.approveListing(cmd)
                 .map(result -> ResponseEntity.status(HttpStatus.ACCEPTED).body(new ApproveListingResponseDto()))
                 .onErrorResume(e -> Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).build()));
 

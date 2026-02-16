@@ -3,7 +3,7 @@ package com.example.webflux.infrastructure.orders.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.webflux.application.orders.dto.response.CreateOrderResponseDto;
-import com.example.webflux.application.orders.orchestator.OrderUseCaseImp;
+import com.example.webflux.application.orders.usecases.OrderUseCases;
 
 import reactor.core.publisher.Mono;
 
@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RestController
 public class OrderController {
 
-    private final OrderUseCaseImp orderUseCaseImp;
+    private final OrderUseCases orderUseCase;
 
-    public OrderController(OrderUseCaseImp orderUseCaseImp) {
-        this.orderUseCaseImp = orderUseCaseImp;
+    public OrderController(OrderUseCases orderUseCase) {
+        this.orderUseCase = orderUseCase;
     }
 
     @PostMapping("/users/{userId}/orders")

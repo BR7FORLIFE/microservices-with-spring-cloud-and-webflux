@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.webflux.application.products.commands.RegisterProductCommand;
 import com.example.webflux.application.products.dto.RegisterProductRequestDto;
 import com.example.webflux.application.products.dto.RegisterProductResponseDto;
-import com.example.webflux.application.products.orchestator.ProductUseCaseImp;
+import com.example.webflux.application.products.usecases.ProductUseCases;
 
 import jakarta.validation.Valid;
 import reactor.core.publisher.Mono;
@@ -19,10 +19,10 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/products")
 public class ProductController {
 
-    private final ProductUseCaseImp productUseCaseImp;
+    private final ProductUseCases productUseCases;
 
-    public ProductController(ProductUseCaseImp productUseCaseImp) {
-        this.productUseCaseImp = productUseCaseImp;
+    public ProductController(ProductUseCases productUseCases) {
+        this.productUseCases = productUseCases;
     }
 
     @PostMapping("/register")
@@ -31,7 +31,7 @@ public class ProductController {
         RegisterProductCommand cmd = new RegisterProductCommand(productDto.name(), productDto.sku(),
                 productDto.shortDescription(), productDto.longDescription(), productDto.model());
 
-        return productUseCaseImp.registerProduct(cmd)
+        return productUseCases.registerProduct(cmd)
                 .map(result -> ResponseEntity.ok()
                         .body(new RegisterProductResponseDto(result.productId(), result.name(),
                                 "Product register succesfull!")))
