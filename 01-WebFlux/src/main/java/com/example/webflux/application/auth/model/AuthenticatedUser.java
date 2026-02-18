@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.UUID;
 
 public record AuthenticatedUser(
-    UUID userId, 
-    String username,
-    String password,
-    Collection<String> rols    
-) {
+        UUID userId,
+        String username,
+        String password,
+        String authStatus,
+        Collection<String> rols) {
 
 }
