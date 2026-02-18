@@ -10,6 +10,7 @@ import com.example.webflux.application.auth.command.LoginUserCommandResult;
 import com.example.webflux.application.auth.command.RegisterUserCommand;
 import com.example.webflux.application.auth.command.RegisterUserCommandResult;
 import com.example.webflux.application.auth.command.VerifiedUserCommandResult;
+import com.example.webflux.application.auth.exceptions.AuthStatusEmailVerified;
 import com.example.webflux.application.auth.exceptions.IncorrectPasswordException;
 import com.example.webflux.application.auth.exceptions.UserAlreadyRegisterException;
 import com.example.webflux.application.auth.exceptions.UserNotFoundException;
@@ -18,6 +19,7 @@ import com.example.webflux.application.auth.ports.UserJwtPort;
 import com.example.webflux.application.auth.ports.UserSecurityPort;
 import com.example.webflux.application.auth.usecases.AuthUseCase;
 import com.example.webflux.application.refreshToken.usecases.RefreshTokenUseCase;
+import com.example.webflux.domain.auth.models.UserAuthStatus;
 import com.example.webflux.domain.auth.models.UserModelDomain;
 import com.example.webflux.domain.auth.ports.UserDomainRepositoryPort;
 
@@ -76,6 +78,10 @@ public class AuthUseCaseImp implements AuthUseCase {
                 .flatMap(user -> {
                     if (!passwordEncoder.matches(cmd.password(), user.password())) {
                         return Mono.error(new IncorrectPasswordException());
+                    }
+
+                    if (UserAuthStatus.valueOf(user.authStatus()) != UserAuthStatus.ACTIVE) {
+                        return Mono.error(new AuthStatusEmailVerified());
                     }
 
                     return jwtPort.generateAccessToken(user)
