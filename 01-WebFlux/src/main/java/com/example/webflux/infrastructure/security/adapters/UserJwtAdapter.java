@@ -29,6 +29,7 @@ public class UserJwtAdapter implements UserJwtPort {
                         user.userId(),
                         user.username(),
                         null,
+                        null,
                         user.password(),
                         Set.copyOf(user.rols())));
 

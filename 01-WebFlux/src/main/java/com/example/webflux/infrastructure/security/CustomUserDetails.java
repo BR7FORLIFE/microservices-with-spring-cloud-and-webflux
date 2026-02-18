@@ -14,12 +14,14 @@ public class CustomUserDetails implements UserDetails {
     private UUID userId;
     private String username;
     private String password;
+    private String authStatus;
     private Collection<? extends GrantedAuthority> authorities;
 
     public CustomUserDetails(UserModelDomain userModel) {
         this.userId = userModel.getId();
         this.username = userModel.getUsername();
         this.password = userModel.getPassword();
+        this.authStatus = userModel.getAuthStatus().name();
         this.authorities = userModel.getRols()
                 .stream()
                 .map(rol -> new SimpleGrantedAuthority("ROLE_" + rol))
@@ -43,5 +45,9 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getPassword() {
         return this.password;
+    }
+
+    public String getAuthStatus() {
+        return authStatus;
     }
 }

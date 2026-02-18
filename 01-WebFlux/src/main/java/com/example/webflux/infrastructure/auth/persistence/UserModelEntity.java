@@ -10,13 +10,16 @@ import lombok.Data;
 
 @Table(name = "users")
 @Data
-public class UserModelEntity{
+public class UserModelEntity {
     @Id
     @Column("user_id")
     private UUID id;
 
     @Column("username")
     private String username;
+
+    @Column("auth_status")
+    private String authStatus;
 
     @Column("email")
     private String email;

@@ -39,6 +39,7 @@ public class UserSecurityAdapter implements UserSecurityPort {
                 user.getUserId(),
                 user.getUsername(),
                 user.getPassword(),
+                user.getAuthStatus(),
                 user.getAuthorities()
                         .stream()
                         .map(rol -> rol.getAuthority())
