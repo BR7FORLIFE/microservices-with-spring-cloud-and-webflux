@@ -13,4 +13,8 @@ public interface R2dbcPostgresEmailVerificationTokenRepository
     Mono<EmailVerificationTokenEntity> findByEmailVerificationId(UUID id);
 
     Mono<EmailVerificationTokenEntity> findByUserId(UUID id);
+
+    Mono<EmailVerificationTokenEntity> save(EmailVerificationTokenEntity entity);
+
+    Mono<EmailVerificationTokenEntity> findByTokenHash(String hash);
 }
