@@ -7,7 +7,7 @@ spring:
     password: ${DB_PASSWORD}
 
   flyway:
-    enabled: true
+    enabled: false
     url: ${DB_JDBC_URL} 
     user: ${DB_USERNAME}
     password: ${DB_PASSWORD}
@@ -31,3 +31,6 @@ server:
 
 refresh-token:
   ttl: 30d 
+
+email-expiration:
+  time: 15m
