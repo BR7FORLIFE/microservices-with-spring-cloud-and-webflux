@@ -10,4 +10,8 @@ public interface EmailVerificationTokenPort {
     Mono<EmailVerificationTokenModel> findById(UUID id);
 
     Mono<EmailVerificationTokenModel> findByUserId(UUID userId);
+
+    Mono<EmailVerificationTokenModel> findByTokenHash(String rawToken);
+
+    Mono<EmailVerificationTokenModel> save(EmailVerificationTokenModel model);
 }
