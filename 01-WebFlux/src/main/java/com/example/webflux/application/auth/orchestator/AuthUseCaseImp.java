@@ -18,6 +18,8 @@ import com.example.webflux.application.auth.exceptions.VerifiedUserException;
 import com.example.webflux.application.auth.ports.UserJwtPort;
 import com.example.webflux.application.auth.ports.UserSecurityPort;
 import com.example.webflux.application.auth.usecases.AuthUseCase;
+import com.example.webflux.application.emailVerificationToken.commands.SendEmailCommand;
+import com.example.webflux.application.emailVerificationToken.usecases.EmailVerifiedTokenUseCase;
 import com.example.webflux.application.refreshToken.usecases.RefreshTokenUseCase;
 import com.example.webflux.domain.auth.models.UserAuthStatus;
 import com.example.webflux.domain.auth.models.UserModelDomain;
@@ -33,14 +35,17 @@ public class AuthUseCaseImp implements AuthUseCase {
     private final UserJwtPort jwtPort;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenUseCase refreshTokenUseCase;
+    private final EmailVerifiedTokenUseCase emailUseCase;
 
     public AuthUseCaseImp(PasswordEncoder passwordEncoder, UserDomainRepositoryPort port,
-            UserSecurityPort userSecurityPort, UserJwtPort userJwtPort, RefreshTokenUseCase refreshTokenUseCase) {
+            UserSecurityPort userSecurityPort, UserJwtPort userJwtPort, RefreshTokenUseCase refreshTokenUseCase,
+            EmailVerifiedTokenUseCase emailVerifiedTokenUseCase) {
         this.passwordEncoder = passwordEncoder;
         this.userPort = port;
         this.userSecurityPort = userSecurityPort;
         this.jwtPort = userJwtPort;
         this.refreshTokenUseCase = refreshTokenUseCase;
+        this.emailUseCase = emailVerifiedTokenUseCase;
     }
 
     @Override
@@ -65,9 +70,18 @@ public class AuthUseCaseImp implements AuthUseCase {
                     UserModelDomain userModel = UserModelDomain.register(cmd.username(), cmd.email(), passwordHash);
 
                     return userPort.save(userModel)
-                            .map(saved -> new RegisterUserCommandResult(
-                                    saved.getId(),
-                                    saved.getUsername()));
+                            .flatMap(saved -> {
+                                SendEmailCommand emailCommand = new SendEmailCommand(saved.getId(), saved.getEmail());
+
+                                return emailUseCase.sendEmail(emailCommand)
+                                        .map(emailMessage -> {
+                                            return new RegisterUserCommandResult(
+                                                    saved.getId(),
+                                                    saved.getUsername(),
+                                                    emailMessage.message());
+                                        });
+
+                            });
                 });
     }
 
