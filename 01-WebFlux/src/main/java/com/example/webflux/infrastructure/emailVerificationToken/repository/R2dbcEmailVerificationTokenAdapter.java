@@ -31,4 +31,16 @@ public class R2dbcEmailVerificationTokenAdapter implements EmailVerificationToke
         return repository.findByUserId(userId)
                 .map(EmailVerificationTokenMapper::toDomain);
     }
+
+    @Override
+    public Mono<EmailVerificationTokenModel> findByTokenHash(String hash) {
+        return repository.findByTokenHash(hash)
+                .map(EmailVerificationTokenMapper::toDomain);
+    }
+
+    @Override
+    public Mono<EmailVerificationTokenModel> save(EmailVerificationTokenModel model) {
+        return repository.save(EmailVerificationTokenMapper.toEntity(model))
+                .map(EmailVerificationTokenMapper::toDomain);
+    }
 }
