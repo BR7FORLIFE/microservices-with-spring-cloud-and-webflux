@@ -42,6 +42,19 @@ public class UserModelDomain {
                 Set.of("USER"));
     }
 
+    public UserModelDomain activateUser() {
+        if (this.authStatus == UserAuthStatus.ACTIVE) {
+            throw new IllegalStateException("User already activate");
+        }
+        return new UserModelDomain(
+                this.id,
+                this.username,
+                UserAuthStatus.ACTIVE,
+                this.email,
+                this.passwordHash,
+                this.rols);
+    }
+
     public boolean passwordMatches(String raw, PasswordEncoder encoder) {
         return encoder.matches(raw, passwordHash);
     }
