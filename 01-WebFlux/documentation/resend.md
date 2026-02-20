@@ -1,3 +1,7 @@
+## Definicion
+
+La verificación de emails en backend con Resend implica generar un token único, enviarlo vía Resend API (usando el SDK) al usuario y validar ese token en una ruta específica. Se crea un usuario en estado "no verificado", se envía un correo con un enlace que incluye un JWT, y al hacer clic, el backend cambia el estado a "verificado". 
+
 ## Flujo de verificaciones de email
 ```txt
 [1] POST /register
