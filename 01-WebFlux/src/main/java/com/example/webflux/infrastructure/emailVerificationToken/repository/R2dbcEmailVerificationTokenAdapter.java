@@ -16,7 +16,7 @@ public class R2dbcEmailVerificationTokenAdapter implements EmailVerificationToke
 
     private final R2dbcPostgresEmailVerificationTokenRepository repository;
 
-    private R2dbcEmailVerificationTokenAdapter(R2dbcPostgresEmailVerificationTokenRepository repository) {
+    public R2dbcEmailVerificationTokenAdapter(R2dbcPostgresEmailVerificationTokenRepository repository) {
         this.repository = repository;
     }
 

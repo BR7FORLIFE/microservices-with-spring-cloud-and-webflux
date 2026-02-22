@@ -14,9 +14,9 @@ public class EmailVerificationTokenMapper {
         EmailVerificationTokenEntity entity = new EmailVerificationTokenEntity();
 
         entity.setUserId(domain.getUserId());
-        entity.setTokenHash(entity.getTokenHash());
-        entity.setExpiredAt(entity.getExpiredAt());
-        entity.setCreateAt(entity.getCreateAt());
+        entity.setTokenHash(domain.getTokenHash());
+        entity.setExpiredAt(domain.getExpiredAt());
+        entity.setCreateAt(domain.getCreateAt());
         entity.setConsumedAt(domain.getConsumedAt());
 
         return entity;

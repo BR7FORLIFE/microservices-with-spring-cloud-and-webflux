@@ -20,6 +20,7 @@ public class UserModelDomain {
             Set<String> rols) {
         this.id = id;
         this.username = username;
+        this.authStatus = status;
         this.email = email;
         this.passwordHash = password;
         this.rols = rols;
