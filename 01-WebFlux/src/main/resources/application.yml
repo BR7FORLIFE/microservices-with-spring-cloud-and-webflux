@@ -1,4 +1,8 @@
 spring:
+  profiles:
+    active:
+    - ${SPRING_PROFILE_ACTIVE}
+
   application:
     name: 01-WebFlux
   r2dbc:
@@ -19,6 +23,10 @@ spring:
     cloud-name: ${CLOUDINARY_CLOUD_NAME}
     api-key: ${CLOUDINARY_API_KEY}
     api-secret: ${CLOUDINARY_API_SECRET}
+
+  resend: 
+    issuer: ${RESEND_ISSUER}
+    api-key: ${RESEND_API_KEY}
 
 logging:
   level:
