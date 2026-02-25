@@ -5,6 +5,6 @@ import com.example.webflux.application.zGlobalApplicationExceptions.ApplicationE
 public class InvalidTokenException extends ApplicationException {
 
     public InvalidTokenException() {
-        super("");
+        super("Token de verificacion de email invalido o no encontrado!");
     }
 }
