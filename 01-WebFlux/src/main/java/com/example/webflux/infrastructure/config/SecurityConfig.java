@@ -23,7 +23,7 @@ public class SecurityConfig {
 
     private final JwtService jwtService;
 
-    private final String[] PUBLIC_PATHS = { "/api/auth/**" };
+    private final String[] PUBLIC_PATHS = { "/api/auth/**", "/api/email/**" };
 
     public SecurityConfig(JwtService jwtService) {
         this.jwtService = jwtService;
@@ -51,7 +51,7 @@ public class SecurityConfig {
         filter.setSecurityContextRepository(NoOpServerSecurityContextRepository.getInstance());
         return filter;
     }
-    
+
     @Bean
     public ReactiveAuthenticationManager reactiveAuthenticationManager(
             ReactiveUserDetailsService reactiveUserDetailsService,
