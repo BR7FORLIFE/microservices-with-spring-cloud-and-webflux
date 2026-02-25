@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 public interface R2dbcPostgresEmailVerificationTokenRepository
         extends ReactiveCrudRepository<EmailVerificationTokenEntity, UUID> {
-    Mono<EmailVerificationTokenEntity> findByEmailVerificationId(UUID id);
+    Mono<EmailVerificationTokenEntity> findById(UUID id);
 
     Mono<EmailVerificationTokenEntity> findByUserId(UUID id);
 
