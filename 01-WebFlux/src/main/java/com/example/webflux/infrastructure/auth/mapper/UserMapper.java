@@ -30,7 +30,7 @@ public class UserMapper {
          * Data intentará actualizar una fila inexistente y la operación fallará.
          */
 
-        userModelEntity.setId(null);
+        userModelEntity.setId(userModel.getId());
         userModelEntity.setUsername(userModel.getUsername());
         userModelEntity.setEmail(userModel.getEmail());
         userModelEntity.setPasswordHash(userModel.getPassword());

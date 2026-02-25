@@ -13,6 +13,7 @@ public class EmailVerificationTokenMapper {
     public static EmailVerificationTokenEntity toEntity(EmailVerificationTokenModel domain) {
         EmailVerificationTokenEntity entity = new EmailVerificationTokenEntity();
 
+        entity.setId(domain.getId());
         entity.setUserId(domain.getUserId());
         entity.setTokenHash(domain.getTokenHash());
         entity.setExpiredAt(domain.getExpiredAt());
