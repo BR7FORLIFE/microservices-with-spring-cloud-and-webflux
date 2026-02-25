@@ -58,7 +58,7 @@ public class AuthUseCaseImp implements AuthUseCase {
     @Override
     public Mono<RegisterUserCommandResult> executeRegister(RegisterUserCommand cmd) {
 
-        return userPort.findByUsername(cmd.username())
+        return userPort.findByEmail(cmd.email())
                 .hasElement()
                 .flatMap(exists -> {
                     if (exists) {
