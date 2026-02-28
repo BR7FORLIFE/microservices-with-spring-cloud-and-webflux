@@ -9,10 +9,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example.webflux.domain.auth.models.UserModelDomain;
 
-public class CustomUserDetails implements UserDetails {
+public final class CustomUserDetails implements UserDetails {
 
     private UUID userId;
     private String username;
+    private String email;
     private String password;
     private String authStatus;
     private Collection<? extends GrantedAuthority> authorities;
@@ -20,6 +21,7 @@ public class CustomUserDetails implements UserDetails {
     public CustomUserDetails(UserModelDomain userModel) {
         this.userId = userModel.getId();
         this.username = userModel.getUsername();
+        this.email = userModel.getEmail();
         this.password = userModel.getPassword();
         this.authStatus = userModel.getAuthStatus().name();
         this.authorities = userModel.getRols()
@@ -49,5 +51,9 @@ public class CustomUserDetails implements UserDetails {
 
     public String getAuthStatus() {
         return authStatus;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

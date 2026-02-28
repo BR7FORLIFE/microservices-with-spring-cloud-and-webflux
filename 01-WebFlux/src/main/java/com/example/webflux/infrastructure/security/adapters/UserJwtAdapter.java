@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.webflux.application.auth.model.AuthenticatedUser;
 import com.example.webflux.application.auth.ports.UserJwtPort;
+import com.example.webflux.domain.auth.models.UserAuthStatus;
 import com.example.webflux.domain.auth.models.UserModelDomain;
 import com.example.webflux.infrastructure.security.CustomUserDetails;
 import com.example.webflux.infrastructure.security.jwt.JwtService;
@@ -28,8 +29,8 @@ public class UserJwtAdapter implements UserJwtPort {
                 new UserModelDomain(
                         user.userId(),
                         user.username(),
-                        null,
-                        null,
+                        UserAuthStatus.valueOf(user.authStatus()),
+                        user.email(),
                         user.password(),
                         Set.copyOf(user.rols())));
 

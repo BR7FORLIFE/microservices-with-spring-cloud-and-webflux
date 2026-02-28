@@ -38,6 +38,7 @@ public class UserSecurityAdapter implements UserSecurityPort {
         return new AuthenticatedUser(
                 user.getUserId(),
                 user.getUsername(),
+                user.getEmail(),
                 user.getPassword(),
                 user.getAuthStatus(),
                 user.getAuthorities()
