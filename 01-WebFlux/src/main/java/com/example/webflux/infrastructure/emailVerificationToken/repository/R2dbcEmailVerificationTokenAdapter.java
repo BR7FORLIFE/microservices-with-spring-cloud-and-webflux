@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.example.webflux.domain.emailVerificationToken.models.EmailVerificationTokenModel;
 import com.example.webflux.domain.emailVerificationToken.ports.EmailVerificationTokenPort;
 import com.example.webflux.infrastructure.emailVerificationToken.mapper.EmailVerificationTokenMapper;
+import com.example.webflux.infrastructure.emailVerificationToken.persistence.EmailVerificationTokenEntity;
 import com.example.webflux.infrastructure.emailVerificationToken.repository.postgres.R2dbcPostgresEmailVerificationTokenRepository;
 
 import reactor.core.publisher.Mono;
@@ -40,7 +41,16 @@ public class R2dbcEmailVerificationTokenAdapter implements EmailVerificationToke
 
     @Override
     public Mono<EmailVerificationTokenModel> save(EmailVerificationTokenModel model) {
-        return repository.save(EmailVerificationTokenMapper.toEntity(model))
+        return repository.existsById(model.getId())
+                .flatMap(exists -> {
+                    EmailVerificationTokenEntity entity = EmailVerificationTokenMapper.toEntity(model);
+
+                    if (exists) {
+                        entity.markNotNew();
+                    }
+
+                    return repository.save(entity);
+                })
                 .map(EmailVerificationTokenMapper::toDomain);
     }
 }
