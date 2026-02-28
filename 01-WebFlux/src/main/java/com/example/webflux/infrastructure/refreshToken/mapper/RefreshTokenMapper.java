@@ -7,8 +7,7 @@ public class RefreshTokenMapper {
 
     public static RefreshTokenModel toDomain(RefreshTokenEntity refreshTokenEntity) {
         return RefreshTokenModel.create(refreshTokenEntity.getId(), refreshTokenEntity.getUserId(),
-                refreshTokenEntity.getTokenHash(), refreshTokenEntity.getExpiredAt(), refreshTokenEntity.isRevoked(),
-                refreshTokenEntity.getCreateAt());
+                refreshTokenEntity.getTokenHash(), refreshTokenEntity.getExpiredAt(), refreshTokenEntity.getCreateAt());
     }
 
     public static RefreshTokenEntity toEntity(RefreshTokenModel refreshTokenModel) {
