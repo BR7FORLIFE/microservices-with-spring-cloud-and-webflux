@@ -9,6 +9,9 @@ import org.springframework.web.server.ServerWebExchange;
 import com.example.webflux.application.auth.exceptions.IncorrectPasswordException;
 import com.example.webflux.application.auth.exceptions.UserAlreadyRegisterException;
 import com.example.webflux.application.auth.exceptions.UserNotFoundException;
+import com.example.webflux.application.refreshToken.exceptions.ValidateAndRotateException;
+import com.example.webflux.domain.refreshToken.exceptions.RefreshTokenExpiredException;
+import com.example.webflux.domain.refreshToken.exceptions.RefreshTokenRevokedException;
 import com.example.webflux.infrastructure.zGlobalExceptionInfraestructure.helpers.ApiError;
 import com.example.webflux.infrastructure.zGlobalExceptionInfraestructure.helpers.StaticError;
 
@@ -37,6 +40,28 @@ public class AuthGlobalAdviceExceptions {
     @ExceptionHandler(IncorrectPasswordException.class)
     public ResponseEntity<ApiError> handleIncorrectPassword(
             IncorrectPasswordException ex,
+            ServerWebExchange exchange) {
+        return StaticError.buildError(HttpStatus.FORBIDDEN, ex.getMessage(), exchange);
+    }
+
+    // === REFRESH TOKEN EXCEPTIONS ===
+    @ExceptionHandler(ValidateAndRotateException.class)
+    public ResponseEntity<ApiError> handleValidateAndRotateRefreshToken(
+            ValidateAndRotateException ex,
+            ServerWebExchange exchange) {
+        return StaticError.buildError(HttpStatus.FORBIDDEN, ex.getMessage(), exchange);
+    }
+
+    @ExceptionHandler(RefreshTokenRevokedException.class)
+    public ResponseEntity<ApiError> handleRefreshTokenRevoked(
+            RefreshTokenRevokedException ex,
+            ServerWebExchange exchange) {
+        return StaticError.buildError(HttpStatus.FORBIDDEN, ex.getMessage(), exchange);
+    }
+
+    @ExceptionHandler(RefreshTokenExpiredException.class)
+    public ResponseEntity<ApiError> handleRefreshToken(
+            RefreshTokenExpiredException ex,
             ServerWebExchange exchange) {
         return StaticError.buildError(HttpStatus.FORBIDDEN, ex.getMessage(), exchange);
     }
