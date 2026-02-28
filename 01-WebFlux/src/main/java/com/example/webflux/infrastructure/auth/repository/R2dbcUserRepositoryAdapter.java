@@ -9,6 +9,7 @@ import com.example.webflux.domain.auth.models.UserAuthStatus;
 import com.example.webflux.domain.auth.models.UserModelDomain;
 import com.example.webflux.domain.auth.ports.UserDomainRepositoryPort;
 import com.example.webflux.infrastructure.auth.mapper.UserMapper;
+import com.example.webflux.infrastructure.auth.persistence.UserModelEntity;
 import com.example.webflux.infrastructure.auth.persistence.UserRolEntity;
 import com.example.webflux.infrastructure.auth.repository.postgres.R2dbcPostgresUserRepository;
 import com.example.webflux.infrastructure.auth.repository.postgres.R2dbcPostgresUserRolRepository;
@@ -55,16 +56,37 @@ public class R2dbcUserRepositoryAdapter implements UserDomainRepositoryPort {
         @Override
         public Mono<UserModelDomain> findByEmail(String email) {
                 return userRepository.findByEmail(email)
-                                .map(UserMapper::toDomain);
+                                .flatMap(user -> userRolRepository.findByUserId(user.getId())
+                                                .map(UserRolEntity::getUserRol)
+                                                .collect(Collectors.toSet())
+                                                .map(rols -> new UserModelDomain(
+                                                                user.getId(),
+                                                                user.getUsername(),
+                                                                UserAuthStatus.valueOf(user.getAuthStatus()),
+                                                                user.getEmail(),
+                                                                user.getPasswordHash(),
+                                                                rols)));
         }
 
         @Override
         public Mono<UserModelDomain> save(UserModelDomain userModelDomain) {
-                return userRepository.save(UserMapper.toEntity(userModelDomain))
-                                .flatMap(userSaved -> Flux.fromIterable(userModelDomain.getRols())
-                                                .map(role -> new UserRolEntity(userSaved.getId(), role))
-                                                .flatMap(userRolRepository::save)
-                                                .then(Mono.just(userSaved)))
-                                .map(UserMapper::toDomain);
+                return userRepository.existsById(userModelDomain.getId())
+                                .flatMap(exists -> {
+                                        UserModelEntity entity = UserMapper.toEntity(userModelDomain);
+
+                                        if (exists) {
+                                                entity.markNotNew();
+                                        }
+
+                                        return userRepository.save(entity)
+                                                        .flatMap(userSaved -> Flux
+                                                                        .fromIterable(userModelDomain.getRols())
+                                                                        .map(role -> new UserRolEntity(
+                                                                                        userSaved.getId(), role))
+                                                                        .flatMap(userRolRepository::save)
+                                                                        .then(Mono.just(userSaved)))
+                                                        .map(UserMapper::toDomain);
+
+                                });
         }
 }
