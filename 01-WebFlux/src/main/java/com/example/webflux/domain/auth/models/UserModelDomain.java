@@ -13,9 +13,6 @@ public class UserModelDomain {
     private UserAuthStatus authStatus;
     private Set<String> rols;
 
-    public UserModelDomain() {
-    }
-
     public UserModelDomain(UUID id, String username, UserAuthStatus status, String email, String password,
             Set<String> rols) {
         this.id = id;

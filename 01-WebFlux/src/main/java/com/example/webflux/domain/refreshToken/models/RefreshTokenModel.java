@@ -22,9 +22,8 @@ public final class RefreshTokenModel {
     }
 
     public static RefreshTokenModel create(UUID id, UUID userId, String tokenHash, Instant expiresAt,
-            boolean revoked,
             Instant createAt) {
-        return new RefreshTokenModel(id, userId, tokenHash, expiresAt, revoked, createAt);
+        return new RefreshTokenModel(id, userId, tokenHash, expiresAt, false, createAt);
     }
 
     public RefreshTokenModel revoke() {

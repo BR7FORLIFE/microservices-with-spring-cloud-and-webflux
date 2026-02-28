@@ -31,6 +31,7 @@ public class RefreshTokenUseCaseImp implements RefreshTokenUseCase {
         this.repository = repo;
         this.ttlDuration = duration;
     }
+
     // creamos el refreshToken
     /**
      * Nos basamos de la entropia para generar el RawToken
@@ -40,12 +41,13 @@ public class RefreshTokenUseCaseImp implements RefreshTokenUseCase {
         return repository.revokeAllByUserId(userId)
                 .then(Mono.fromCallable(() -> {
                     UUID jti = UUID.randomUUID(); // <-- id unico de refreshToken Model
-                    String raw = hashConfig.randomBase64(32); // <-- Raw que devolvemos en el mono Base64 con alta entropia
+                    String raw = hashConfig.randomBase64(32); // <-- Raw que devolvemos en el mono Base64 con alta
+                                                              // entropia
                     String hash = hashConfig.sha256(raw); // <-- Obligatorio hasearlo para seguridad por si roban la DB
                     Instant now = Instant.now();
                     Instant expiredAt = now.plus(ttlDuration);
                     RefreshTokenModel refreshtokenModel = RefreshTokenModel.create(jti, userId, hash,
-                            expiredAt, false, expiredAt);
+                            expiredAt, expiredAt);
                     return Tuples.of(refreshtokenModel, raw);
                 }).flatMap(tuple -> {
                     return repository.save(tuple.getT1()).thenReturn(tuple.getT2());
