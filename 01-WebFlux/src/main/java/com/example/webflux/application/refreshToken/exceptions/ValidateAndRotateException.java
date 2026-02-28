@@ -5,6 +5,6 @@ import com.example.webflux.application.zGlobalApplicationExceptions.ApplicationE
 public class ValidateAndRotateException extends ApplicationException {
 
     public ValidateAndRotateException() {
-        super("");
+        super("Refresh token inexistente!");
     }
 }
