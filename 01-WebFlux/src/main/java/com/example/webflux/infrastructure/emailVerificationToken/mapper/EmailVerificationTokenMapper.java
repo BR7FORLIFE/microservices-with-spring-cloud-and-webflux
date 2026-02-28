@@ -6,7 +6,8 @@ import com.example.webflux.infrastructure.emailVerificationToken.persistence.Ema
 public class EmailVerificationTokenMapper {
 
     public static EmailVerificationTokenModel toDomain(EmailVerificationTokenEntity entity) {
-        return EmailVerificationTokenModel.createNew(entity.getUserId(), entity.getTokenHash(), entity.getExpiredAt(),
+        return EmailVerificationTokenModel.create(entity.getId(), entity.getUserId(), entity.getTokenHash(),
+                entity.getExpiredAt(),
                 entity.getConsumedAt(), entity.getCreateAt());
     }
 

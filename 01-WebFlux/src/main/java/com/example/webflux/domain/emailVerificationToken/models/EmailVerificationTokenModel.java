@@ -30,6 +30,11 @@ public final class EmailVerificationTokenModel {
         return new EmailVerificationTokenModel(UUID.randomUUID(), userId, tokenHash, expiredAt, consumedAt, createAt);
     }
 
+    public static EmailVerificationTokenModel create(UUID id, UUID userId, String tokenHash, Instant expiredAt,
+            Instant consumedAt, Instant createAt) {
+        return new EmailVerificationTokenModel(id, userId, tokenHash, expiredAt, consumedAt, createAt);
+    }
+
     // reglas de negocio que hay que implementar para veficar el email
 
     /**
