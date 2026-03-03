@@ -60,8 +60,8 @@ public class AuthController {
                     ResponseCookie cookie = ResponseCookie
                             .from("refresh_token", token.refreshRaw())
                             .httpOnly(true)
-                            .secure(true)
-                            .path("/api/auth/refresh")
+                            .secure(false) //IMPORTANTE QUITARLO EL VALOR FALSE EN PRODUCCION
+                            .path("/api/auth")
                             .maxAge(30 * 24 * 60 * 60)
                             .sameSite(SameSite.Strict.toString())
                             .build();

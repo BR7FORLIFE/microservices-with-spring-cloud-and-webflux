@@ -69,16 +69,16 @@ public class ListingController {
      *         moderadores
      */
     @PostMapping
-    public Mono<ResponseEntity<CreateListingResponseDto>> createListing(@RequestBody @Valid CreateListingRequestDto dto,
-            Authentication authentication) {
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    public Mono<ResponseEntity<CreateListingResponseDto>> createListing(
+            @RequestBody @Valid CreateListingRequestDto dto, Authentication authentication) {
+        CustomUserDetails details = (CustomUserDetails) authentication.getDetails();
 
-        UUID userId = userDetails.getUserId();
+        UUID userId = details.getUserId();
 
         ProductDraft product = new ProductDraft(dto.product().name(), dto.product().shortDescription(),
                 dto.product().longDescription(), dto.product().model(), dto.product().sku());
 
-        CreateListingCommand cmd = new CreateListingCommand(userId, product, dto.price(), dto.currency(), false);
+        CreateListingCommand cmd = new CreateListingCommand(userId, product, dto.price(), dto.currency());
 
         return listingUseCase.createListing(cmd)
                 .map(result -> ResponseEntity.status(HttpStatus.CREATED).body(new CreateListingResponseDto()));
