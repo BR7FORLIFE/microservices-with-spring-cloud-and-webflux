@@ -7,7 +7,8 @@ public class ProductMapper {
 
     public static ProductModelDomain toDomain(ProductEntity productEntity) {
         return ProductModelDomain.createNew(
-                productEntity.getProductId(),
+                productEntity.getId(),
+                productEntity.getUserId(),
                 productEntity.getSku(),
                 productEntity.getName(),
                 productEntity.getShortDescription(),
@@ -17,7 +18,8 @@ public class ProductMapper {
 
     public static ProductEntity toEntity(ProductModelDomain productModelDomain) {
         ProductEntity productEntity = new ProductEntity();
-        productEntity.setProductId(null);
+        productEntity.setId(productModelDomain.getProductId());
+        productEntity.setUserId(productModelDomain.getProductId());
         productEntity.setSku(productModelDomain.getSku());
         productEntity.setName(productModelDomain.getName());
         productEntity.setShortDescription(productModelDomain.getShortDescription());

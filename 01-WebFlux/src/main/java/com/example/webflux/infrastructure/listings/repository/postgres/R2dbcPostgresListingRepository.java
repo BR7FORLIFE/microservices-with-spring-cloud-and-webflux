@@ -6,6 +6,8 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
 import com.example.webflux.infrastructure.listings.persistence.ListingEntity;
 
-public interface R2dbcPostgresListingRepository extends ReactiveCrudRepository<ListingEntity, UUID> {
+import reactor.core.publisher.Mono;
 
+public interface R2dbcPostgresListingRepository extends ReactiveCrudRepository<ListingEntity, UUID> {
+    Mono<Boolean> existsById(UUID id);
 }

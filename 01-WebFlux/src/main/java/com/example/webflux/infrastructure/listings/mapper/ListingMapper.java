@@ -1,5 +1,6 @@
 package com.example.webflux.infrastructure.listings.mapper;
 
+import com.example.webflux.domain.listings.models.CurrencyEnum;
 import com.example.webflux.domain.listings.models.ListingModelDomain;
 import com.example.webflux.domain.listings.models.ListingPublicationStatus;
 import com.example.webflux.domain.listings.models.ListingStatusReview;
@@ -9,11 +10,10 @@ public class ListingMapper {
 
     public static ListingModelDomain toDomain(ListingEntity listingEntity) {
         return ListingModelDomain.createNew(
-                listingEntity.getListingId(),
+                listingEntity.getId(),
                 listingEntity.getProductId(),
-                listingEntity.getUserId(),
                 listingEntity.getPrice(),
-                listingEntity.getCurrency(),
+                CurrencyEnum.valueOf(listingEntity.getCurrency()),
                 listingEntity.getIsActive(),
                 ListingStatusReview.valueOf(listingEntity.getStatusReview()),
                 ListingPublicationStatus.valueOf(listingEntity.getStatusPublication()),
@@ -23,11 +23,10 @@ public class ListingMapper {
 
     public static ListingEntity toEntity(ListingModelDomain listingModelDomain) {
         ListingEntity listingEntity = new ListingEntity();
-        listingEntity.setListingId(null);
+        listingEntity.setId(listingModelDomain.getListingId());
         listingEntity.setProductId(listingModelDomain.getProductId());
-        listingEntity.setUserId(listingModelDomain.getUserId());
         listingEntity.setPrice(listingModelDomain.getPrice());
-        listingEntity.setCurrency(listingModelDomain.getCurrency());
+        listingEntity.setCurrency(listingModelDomain.getCurrency().name());
         listingEntity.setIsActive(listingModelDomain.getIsActive());
         listingEntity.setStatusReview(listingModelDomain.getReviewStatus().toString());
         listingEntity.setStatusPublication(listingModelDomain.getPublicationStatus().toString());

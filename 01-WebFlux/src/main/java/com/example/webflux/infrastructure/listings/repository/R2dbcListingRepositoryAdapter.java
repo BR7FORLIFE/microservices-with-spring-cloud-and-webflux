@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.example.webflux.domain.listings.models.ListingModelDomain;
 import com.example.webflux.domain.listings.ports.ListingDomainRepositoryPort;
 import com.example.webflux.infrastructure.listings.mapper.ListingMapper;
+import com.example.webflux.infrastructure.listings.persistence.ListingEntity;
 import com.example.webflux.infrastructure.listings.repository.postgres.R2dbcPostgresListingRepository;
 
 import reactor.core.publisher.Mono;
@@ -22,8 +23,17 @@ public class R2dbcListingRepositoryAdapter implements ListingDomainRepositoryPor
 
     @Override
     public Mono<ListingModelDomain> save(ListingModelDomain listing) {
-        return listingRepository.save(ListingMapper.toEntity(listing))
-                .map(ListingMapper::toDomain);
+        return listingRepository.existsById(listing.getListingId())
+                .flatMap(exists -> {
+                    ListingEntity entity = ListingMapper.toEntity(listing);
+
+                    if (exists) {
+                        entity.markNotNew();
+                    }
+
+                    return listingRepository.save(entity)
+                            .map(ListingMapper::toDomain);
+                });
     }
 
     @Override

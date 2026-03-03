@@ -11,4 +11,7 @@ import reactor.core.publisher.Mono;
 public interface R2dbcPostgresProductRepository extends ReactiveCrudRepository<ProductEntity, UUID> {
     Mono<ProductEntity> findBySku(String sku);
 
+    Mono<Boolean> existsById(UUID id);
+
+    Mono<Boolean> existsBySku(String sku);
 }

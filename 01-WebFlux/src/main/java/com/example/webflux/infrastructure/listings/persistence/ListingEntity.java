@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -11,16 +13,16 @@ import lombok.Data;
 
 @Table(name = "listings")
 @Data
-public class ListingEntity {
+public class ListingEntity implements Persistable<UUID> {
     @Id
     @Column("listing_id")
-    private UUID listingId;
+    private UUID id;
+
+    @Transient
+    private Boolean isNew = true;
 
     @Column("product_id")
     private UUID productId;
-
-    @Column("user_id")
-    private UUID userId;
 
     @Column("price")
     private Double price;
@@ -42,4 +44,13 @@ public class ListingEntity {
 
     @Column("update_at")
     private Instant updateAt;
+
+    @Override
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void markNotNew() {
+        this.isNew = false;
+    }
 }
