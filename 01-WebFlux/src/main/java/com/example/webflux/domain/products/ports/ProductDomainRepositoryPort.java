@@ -12,4 +12,8 @@ public interface ProductDomainRepositoryPort {
     Mono<ProductModelDomain> findBySku(String sku);
 
     Mono<ProductModelDomain> save(ProductModelDomain product);
+
+    Mono<Boolean> existById(UUID id);
+
+    Mono<Boolean> existsBySku(String sku);
 }

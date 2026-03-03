@@ -5,6 +5,6 @@ import com.example.webflux.application.zGlobalApplicationExceptions.ApplicationE
 public class CreateListingException extends ApplicationException {
 
     public CreateListingException() {
-        super("");
+        super("Error to create the listing! - The product already exists!");
     }
 }

@@ -5,6 +5,6 @@ import com.example.webflux.application.zGlobalApplicationExceptions.ApplicationE
 public class RegisterProductException extends ApplicationException {
 
     public RegisterProductException() {
-        super("");
+        super("The current product already exists!");
     }
 }
