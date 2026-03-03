@@ -4,6 +4,7 @@ import java.util.UUID;
 
 public final class ProductModelDomain {
     private final UUID productId;
+    private final UUID userId;
     private final String sku;
     private final String name;
     private final String shortDescription;
@@ -12,12 +13,14 @@ public final class ProductModelDomain {
 
     private ProductModelDomain(
             UUID productId,
+            UUID userId,
             String sku,
             String name,
             String shortDescription,
             String longDescription,
             String model) {
         this.productId = productId;
+        this.userId = userId;
         this.sku = sku;
         this.name = name;
         this.shortDescription = shortDescription;
@@ -25,7 +28,8 @@ public final class ProductModelDomain {
         this.model = model;
     }
 
-    public static ProductModelDomain createNew(
+    public static ProductModelDomain createDraft(
+            UUID userId,
             String sku,
             String name,
             String shortDescription,
@@ -33,6 +37,7 @@ public final class ProductModelDomain {
             String model) {
         return new ProductModelDomain(
                 UUID.randomUUID(),
+                userId,
                 sku,
                 name,
                 shortDescription,
@@ -42,6 +47,7 @@ public final class ProductModelDomain {
 
     public static ProductModelDomain createNew(
             UUID id,
+            UUID userId,
             String sku,
             String name,
             String shortDescription,
@@ -49,6 +55,7 @@ public final class ProductModelDomain {
             String model) {
         return new ProductModelDomain(
                 id,
+                userId,
                 sku,
                 name,
                 shortDescription,
@@ -59,6 +66,7 @@ public final class ProductModelDomain {
     public ProductModelDomain withId(UUID id) {
         return new ProductModelDomain(
                 id,
+                userId,
                 sku,
                 name,
                 shortDescription,

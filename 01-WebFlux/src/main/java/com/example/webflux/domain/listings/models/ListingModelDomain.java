@@ -8,9 +8,8 @@ import com.example.webflux.domain.listings.exceptions.InvalidStateException;
 public final class ListingModelDomain {
     private final UUID listingId;
     private final UUID productId;
-    private final UUID userId;
     private final Double price;
-    private final String currency;
+    private final CurrencyEnum currency;
 
     private final Boolean isActive;
 
@@ -23,9 +22,8 @@ public final class ListingModelDomain {
     private ListingModelDomain(
             UUID listingId,
             UUID productId,
-            UUID userId,
             Double price,
-            String currency,
+            CurrencyEnum currency,
             Boolean isActive,
             ListingStatusReview reviewStatus,
             ListingPublicationStatus publicationStatus,
@@ -33,7 +31,6 @@ public final class ListingModelDomain {
             Instant updatedAt) {
         this.listingId = listingId;
         this.productId = productId;
-        this.userId = userId;
         this.price = price;
         this.currency = currency;
         this.isActive = isActive;
@@ -47,9 +44,8 @@ public final class ListingModelDomain {
     public static ListingModelDomain createNew(
             UUID listingId,
             UUID productId,
-            UUID userId,
             Double price,
-            String currency,
+            CurrencyEnum currency,
             Boolean isActive,
             ListingStatusReview reviewStatus,
             ListingPublicationStatus publicationStatus,
@@ -58,10 +54,9 @@ public final class ListingModelDomain {
         return new ListingModelDomain(
                 listingId,
                 productId,
-                userId,
                 price,
                 currency,
-                isActive,
+                false,
                 reviewStatus,
                 publicationStatus,
                 createdAt,
@@ -71,14 +66,12 @@ public final class ListingModelDomain {
     // Factory for user creation
     public static ListingModelDomain createDraft(
             UUID productId,
-            UUID userId,
             Double price,
-            String currency) {
+            CurrencyEnum currency) {
         Instant now = Instant.now();
         return new ListingModelDomain(
                 UUID.randomUUID(),
                 productId,
-                userId,
                 price,
                 currency,
                 false,
@@ -110,7 +103,6 @@ public final class ListingModelDomain {
         return new ListingModelDomain(
                 listingId,
                 productId,
-                userId,
                 price,
                 currency,
                 isActive,
@@ -136,7 +128,6 @@ public final class ListingModelDomain {
         return new ListingModelDomain(
                 listingId,
                 productId,
-                userId,
                 price,
                 currency,
                 isActive,
@@ -167,19 +158,15 @@ public final class ListingModelDomain {
         return updatedAt;
     }
 
-        public UUID getProductId() {
+    public UUID getProductId() {
         return productId;
-    }
-
-    public UUID getUserId() {
-        return userId;
     }
 
     public Double getPrice() {
         return price;
     }
 
-    public String getCurrency() {
+    public CurrencyEnum getCurrency() {
         return currency;
     }
 
