@@ -1,5 +1,7 @@
 package com.example.webflux.application.products.commands;
 
-public record RegisterProductCommandResult(String productId, String name) {
+import java.util.UUID;
+
+public record RegisterProductCommandResult(UUID productId, String name) {
 
 }
