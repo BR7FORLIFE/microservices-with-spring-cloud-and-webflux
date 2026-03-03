@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -58,7 +59,10 @@ public class JwtService {
                     .subject(userDetails.getUsername())
                     .issueTime(currentDate)
                     .expirationTime(expirationDate)
-                    .claim("ROLS", userDetails.getAuthorities())
+                    .claim("ROLS", userDetails.getAuthorities()
+                            .stream()
+                            .map(GrantedAuthority::getAuthority)
+                            .toList())
                     .jwtID(UUID.randomUUID().toString())
                     .build();
 

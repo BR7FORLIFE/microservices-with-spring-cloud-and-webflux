@@ -43,7 +43,7 @@ public class UserSecurityAdapter implements UserSecurityPort {
                 user.getAuthStatus(),
                 user.getAuthorities()
                         .stream()
-                        .map(rol -> rol.getAuthority())
+                        .map(rol -> rol.getAuthority().replaceFirst("^ROLE_", ""))
                         .toList());
     }
 }
