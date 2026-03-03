@@ -32,6 +32,8 @@ logging:
   level:
     '[org.springframework]': debug
     '[io.r2dbc.postgresql]': debug 
+  file:
+    name: logger.log
     
 
 server:

@@ -45,6 +45,17 @@ CREATE TABLE IF NOT EXISTS public.catalogs
     CONSTRAINT catalogs_pkey PRIMARY KEY (catalog_id)
 );
 
+CREATE TABLE IF NOT EXISTS public.email_verification_token
+(
+    email_verification_token_id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    token_hash text COLLATE pg_catalog."default" NOT NULL,
+    create_at timestamp without time zone NOT NULL DEFAULT now(),
+    consumed_at timestamp without time zone,
+    expired_at timestamp without time zone,
+    CONSTRAINT email_verification_token_pkey PRIMARY KEY (email_verification_token_id)
+);
+
 CREATE TABLE IF NOT EXISTS public.inventories
 (
     inventory_id integer NOT NULL DEFAULT nextval('inventorys_inventory_id_seq'::regclass),
@@ -58,14 +69,13 @@ CREATE TABLE IF NOT EXISTS public.inventories
 
 CREATE TABLE IF NOT EXISTS public.listings
 (
-    listing_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    listing_id uuid NOT NULL,
     product_id uuid NOT NULL,
     price numeric(10, 2),
-    currency text COLLATE pg_catalog."default" DEFAULT 'USD'::text,
+    currency character varying(3) COLLATE pg_catalog."default" NOT NULL DEFAULT 'USD'::text,
     is_active boolean DEFAULT true,
     create_at timestamp without time zone DEFAULT now(),
     update_at timestamp without time zone DEFAULT now(),
-    user_id uuid NOT NULL,
     status_review character varying(10) COLLATE pg_catalog."default" NOT NULL,
     status_publication character varying(10) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT listings_pkey PRIMARY KEY (listing_id)
@@ -105,14 +115,15 @@ CREATE TABLE IF NOT EXISTS public.payments
 
 CREATE TABLE IF NOT EXISTS public.products
 (
-    product_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    product_id uuid NOT NULL,
     name_product character varying(20) COLLATE pg_catalog."default" NOT NULL,
     short_description text COLLATE pg_catalog."default" NOT NULL,
     long_description text COLLATE pg_catalog."default",
     model character varying(30) COLLATE pg_catalog."default" NOT NULL,
-    sku text COLLATE pg_catalog."default",
+    sku text COLLATE pg_catalog."default" NOT NULL,
+    user_id uuid NOT NULL,
     CONSTRAINT products_pkey PRIMARY KEY (product_id),
-    CONSTRAINT products_sku_key UNIQUE (sku)
+    CONSTRAINT products_sku_unique_key UNIQUE (user_id, sku)
 );
 
 CREATE TABLE IF NOT EXISTS public.references_products
@@ -132,7 +143,8 @@ CREATE TABLE IF NOT EXISTS public.refresh_token
     expired_at timestamp without time zone NOT NULL,
     create_at timestamp without time zone NOT NULL,
     revoked boolean NOT NULL,
-    CONSTRAINT refresh_token_pkey PRIMARY KEY (refresh_token_id)
+    CONSTRAINT refresh_token_pkey PRIMARY KEY (refresh_token_id),
+    CONSTRAINT refresh_token_hash_key UNIQUE (token_hash)
 );
 
 CREATE TABLE IF NOT EXISTS public.rols
@@ -140,15 +152,17 @@ CREATE TABLE IF NOT EXISTS public.rols
     rol_id serial NOT NULL,
     user_id uuid NOT NULL,
     rol character varying COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT rols_pkey PRIMARY KEY (rol_id)
+    CONSTRAINT rols_pkey PRIMARY KEY (rol_id),
+    CONSTRAINT uk_user_rol UNIQUE (user_id, rol)
 );
 
 CREATE TABLE IF NOT EXISTS public.users
 (
-    user_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    user_id uuid NOT NULL,
     username character varying(30) COLLATE pg_catalog."default" NOT NULL,
     email character varying(30) COLLATE pg_catalog."default" NOT NULL,
     password_hash text COLLATE pg_catalog."default" NOT NULL,
+    auth_status text COLLATE pg_catalog."default" NOT NULL DEFAULT 'PENDING'::text,
     CONSTRAINT users_pkey PRIMARY KEY (user_id),
     CONSTRAINT user_email_unique UNIQUE (email)
 );
@@ -169,6 +183,13 @@ CREATE INDEX IF NOT EXISTS idx_catalog_items_product
     ON public.catalog_items(product_id);
 
 
+ALTER TABLE IF EXISTS public.email_verification_token
+    ADD CONSTRAINT fk_user_email_verification_token FOREIGN KEY (user_id)
+    REFERENCES public.users (user_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE CASCADE;
+
+
 ALTER TABLE IF EXISTS public.listings
     ADD CONSTRAINT fk_listings_products FOREIGN KEY (product_id)
     REFERENCES public.products (product_id) MATCH SIMPLE
@@ -176,13 +197,6 @@ ALTER TABLE IF EXISTS public.listings
     ON DELETE NO ACTION;
 CREATE INDEX IF NOT EXISTS idx_listings_product
     ON public.listings(product_id);
-
-
-ALTER TABLE IF EXISTS public.listings
-    ADD CONSTRAINT fk_listings_user FOREIGN KEY (user_id)
-    REFERENCES public.users (user_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION;
 
 
 ALTER TABLE IF EXISTS public.order_items
@@ -213,6 +227,13 @@ ALTER TABLE IF EXISTS public.orders
 ALTER TABLE IF EXISTS public.payments
     ADD CONSTRAINT fk_payments_orders FOREIGN KEY (order_id)
     REFERENCES public.orders (order_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.products
+    ADD CONSTRAINT fk_products_user FOREIGN KEY (user_id)
+    REFERENCES public.users (user_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 
