@@ -22,22 +22,20 @@ public class ProductUseCaseImp implements ProductUseCases {
 
     @Override
     public Mono<RegisterProductCommandResult> registerProduct(RegisterProductCommand cmd) {
-        return port.findBySku(cmd.sku())
-                .hasElement()
+        return port.existsBySku(cmd.sku())
                 .flatMap(exists -> {
                     if (exists) {
-                        return Mono.error(new RegisterProductException());
+                        return Mono.<RegisterProductCommandResult>error(new RegisterProductException());
                     }
-                    ProductModelDomain product = ProductModelDomain.createNew(
-                            cmd.sku(),
-                            cmd.name(),
-                            cmd.shortDescription(),
-                            cmd.longDescription(),
-                            cmd.model());
-                    return port.save(product);
-                })
-                .map(saved -> new RegisterProductCommandResult(
-                        saved.getProductId().toString(),
-                        saved.getName()));
+
+                    ProductModelDomain product = ProductModelDomain.createDraft(cmd.userId(), cmd.sku(), cmd.name(),
+                            cmd.shortDescription(), cmd.longDescription(), cmd.model());
+
+                    return port.save(product)
+                            .map(saved -> {
+                                return new RegisterProductCommandResult(saved.getProductId(), saved.getName());
+                            });
+
+                });
     }
 }
