@@ -1,4 +1,7 @@
 spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
   profiles:
     active:
     - ${SPRING_PROFILE_ACTIVE}
