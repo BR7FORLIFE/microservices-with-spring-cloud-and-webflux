@@ -3,12 +3,12 @@ package com.example.webflux.domain.orders.models;
 import java.time.Instant;
 import java.util.UUID;
 
-public class OrderModelDomain {
-    private UUID orderId;
-    private UUID userId;
-    private Instant orderDate;
-    private String status;
-    private Double totalAmount;
+public final class OrderModelDomain {
+    private final UUID orderId;
+    private final UUID userId;
+    private final Instant orderDate;
+    private final String status;
+    private final Double totalAmount;
 
     public OrderModelDomain(UUID orderId, UUID userId, Instant orderDate, String status, Double totalAmount) {
         this.orderId = orderId;
@@ -36,25 +36,5 @@ public class OrderModelDomain {
 
     public Double getTotalAmount() {
         return totalAmount;
-    }
-
-    public void setOrderId(UUID orderId) {
-        this.orderId = orderId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-
-    public void setOrderDate(Instant orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public void setTotalAmount(Double totalAmount) {
-        this.totalAmount = totalAmount;
     }
 }

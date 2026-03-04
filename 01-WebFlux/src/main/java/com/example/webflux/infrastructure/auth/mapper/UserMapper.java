@@ -1,7 +1,5 @@
 package com.example.webflux.infrastructure.auth.mapper;
 
-import java.util.Collections;
-
 import com.example.webflux.domain.auth.models.UserAuthStatus;
 import com.example.webflux.domain.auth.models.UserModelDomain;
 import com.example.webflux.infrastructure.auth.persistence.UserModelEntity;
@@ -9,9 +7,9 @@ import com.example.webflux.infrastructure.auth.persistence.UserModelEntity;
 public class UserMapper {
 
     public static UserModelDomain toDomain(UserModelEntity userModel) {
-        return new UserModelDomain(userModel.getId(), userModel.getUsername(),
-                UserAuthStatus.valueOf(userModel.getAuthStatus()), userModel.getEmail(), userModel.getPasswordHash(),
-                Collections.emptySet());
+        return UserModelDomain.createNew(userModel.getId(), userModel.getUsername(),
+                UserAuthStatus.valueOf(userModel.getAuthStatus()),
+                userModel.getEmail(), userModel.getPasswordHash());
     }
 
     public static UserModelEntity toEntity(UserModelDomain userModel) {
