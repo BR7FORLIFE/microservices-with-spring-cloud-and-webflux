@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ServerWebExchange;
 
-import com.example.webflux.application.auth.exceptions.AuthStatusEmailVerified;
+import com.example.webflux.application.auth.exceptions.AuthStatusEmailVerifiedException;
 import com.example.webflux.application.emailVerificationToken.exceptions.InvalidTokenException;
 import com.example.webflux.infrastructure.zGlobalExceptionInfraestructure.helpers.ApiError;
 import com.example.webflux.infrastructure.zGlobalExceptionInfraestructure.helpers.StaticError;
@@ -15,9 +15,9 @@ import com.example.webflux.infrastructure.zGlobalExceptionInfraestructure.helper
 public class EmailGlobalAdviceExceptions {
 
     // Excepcion cuando el estado de la verificacion de email no esta activa
-    @ExceptionHandler(AuthStatusEmailVerified.class)
+    @ExceptionHandler(AuthStatusEmailVerifiedException.class)
     public ResponseEntity<ApiError> handleEmailNotVerified(
-            AuthStatusEmailVerified ex,
+            AuthStatusEmailVerifiedException ex,
             ServerWebExchange exchange) {
         return StaticError.buildError(HttpStatus.NOT_ACCEPTABLE, ex.getMessage(), exchange);
     }
