@@ -1,7 +1,9 @@
 package com.example.webflux.infrastructure.security.adapters;
 
-import java.util.Set;
+import java.util.Collection;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -25,14 +27,19 @@ public class UserJwtAdapter implements UserJwtPort {
 
     @Override
     public Mono<String> generateAccessToken(AuthenticatedUser user) {
+        Collection<? extends GrantedAuthority> authorities = user.rols()
+                .stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                .toList();
+
         UserDetails details = new CustomUserDetails(
-                new UserModelDomain(
+                UserModelDomain.createNew(
                         user.userId(),
                         user.username(),
                         UserAuthStatus.valueOf(user.authStatus()),
                         user.email(),
-                        user.password(),
-                        Set.copyOf(user.rols())));
+                        user.password()),
+                authorities);
 
         return jwtService.generateAccessToken(details);
     }
