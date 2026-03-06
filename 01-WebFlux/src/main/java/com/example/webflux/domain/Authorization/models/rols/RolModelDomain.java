@@ -19,6 +19,10 @@ public final class RolModelDomain {
         return new RolModelDomain(UUID.randomUUID(), role);
     }
 
+    public UUID getId() {
+        return id;
+    }
+
     public String getUserRol() {
         return this.role;
     }
