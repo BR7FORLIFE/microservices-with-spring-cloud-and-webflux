@@ -113,6 +113,13 @@ CREATE TABLE IF NOT EXISTS public.payments
     CONSTRAINT payments_pkey PRIMARY KEY (payment_id)
 );
 
+CREATE TABLE IF NOT EXISTS public.permissions
+(
+    permission_id uuid NOT NULL,
+    permission_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT permissions_pkey PRIMARY KEY (permission_id)
+);
+
 CREATE TABLE IF NOT EXISTS public.products
 (
     product_id uuid NOT NULL,
@@ -147,13 +154,19 @@ CREATE TABLE IF NOT EXISTS public.refresh_token
     CONSTRAINT refresh_token_hash_key UNIQUE (token_hash)
 );
 
+CREATE TABLE IF NOT EXISTS public.rol_permissions
+(
+    rol_permission_id serial NOT NULL,
+    rol_id uuid NOT NULL,
+    permission_id uuid NOT NULL,
+    CONSTRAINT rol_permissions_pkey PRIMARY KEY (rol_id, permission_id)
+);
+
 CREATE TABLE IF NOT EXISTS public.rols
 (
-    rol_id serial NOT NULL,
-    user_id uuid NOT NULL,
-    rol character varying COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT rols_pkey PRIMARY KEY (rol_id),
-    CONSTRAINT uk_user_rol UNIQUE (user_id, rol)
+    rol_id uuid NOT NULL,
+    rol character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT rols_pkey PRIMARY KEY (rol_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.users
@@ -165,6 +178,14 @@ CREATE TABLE IF NOT EXISTS public.users
     auth_status text COLLATE pg_catalog."default" NOT NULL DEFAULT 'PENDING'::text,
     CONSTRAINT users_pkey PRIMARY KEY (user_id),
     CONSTRAINT user_email_unique UNIQUE (email)
+);
+
+CREATE TABLE IF NOT EXISTS public.users_rols
+(
+    user_rol_id serial NOT NULL,
+    user_id uuid NOT NULL,
+    rol_id uuid NOT NULL,
+    CONSTRAINT users_rols_pkey PRIMARY KEY (user_id, rol_id)
 );
 
 ALTER TABLE IF EXISTS public.catalog_items
@@ -252,7 +273,28 @@ ALTER TABLE IF EXISTS public.refresh_token
     ON DELETE CASCADE;
 
 
-ALTER TABLE IF EXISTS public.rols
+ALTER TABLE IF EXISTS public.rol_permissions
+    ADD CONSTRAINT fk_permission_permissions FOREIGN KEY (permission_id)
+    REFERENCES public.permissions (permission_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE CASCADE;
+
+
+ALTER TABLE IF EXISTS public.rol_permissions
+    ADD CONSTRAINT fk_rol_rols FOREIGN KEY (rol_id)
+    REFERENCES public.rols (rol_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE CASCADE;
+
+
+ALTER TABLE IF EXISTS public.users_rols
+    ADD CONSTRAINT fk_rol_users FOREIGN KEY (rol_id)
+    REFERENCES public.rols (rol_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.users_rols
     ADD CONSTRAINT fk_user_rols FOREIGN KEY (user_id)
     REFERENCES public.users (user_id) MATCH SIMPLE
     ON UPDATE NO ACTION
