@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example.webflux.domain.auth.models.UserModelDomain;
@@ -18,16 +17,13 @@ public final class CustomUserDetails implements UserDetails {
     private String authStatus;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetails(UserModelDomain userModel) {
+    public CustomUserDetails(UserModelDomain userModel, Collection<? extends GrantedAuthority> authorities) {
         this.userId = userModel.getId();
         this.username = userModel.getUsername();
         this.email = userModel.getEmail();
         this.password = userModel.getPassword();
         this.authStatus = userModel.getAuthStatus().name();
-        this.authorities = userModel.getRols()
-                .stream()
-                .map(rol -> new SimpleGrantedAuthority("ROLE_" + rol))
-                .toList();
+        this.authorities = authorities;
     }
 
     public UUID getUserId() {
