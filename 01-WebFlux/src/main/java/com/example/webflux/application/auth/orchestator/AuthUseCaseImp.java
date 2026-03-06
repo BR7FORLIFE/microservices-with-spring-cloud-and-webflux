@@ -5,12 +5,14 @@ import java.util.UUID;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.webflux.application.Authorization.command.AssigmentUserRolCommand;
+import com.example.webflux.application.Authorization.usecases.AuthorizationRolUseCase;
 import com.example.webflux.application.auth.command.LoginUserCommand;
 import com.example.webflux.application.auth.command.LoginUserCommandResult;
 import com.example.webflux.application.auth.command.RegisterUserCommand;
 import com.example.webflux.application.auth.command.RegisterUserCommandResult;
 import com.example.webflux.application.auth.command.VerifiedUserCommandResult;
-import com.example.webflux.application.auth.exceptions.AuthStatusEmailVerified;
+import com.example.webflux.application.auth.exceptions.AuthStatusEmailVerifiedException;
 import com.example.webflux.application.auth.exceptions.IncorrectPasswordException;
 import com.example.webflux.application.auth.exceptions.UserAlreadyRegisterException;
 import com.example.webflux.application.auth.exceptions.UserNotFoundException;
@@ -36,16 +38,18 @@ public class AuthUseCaseImp implements AuthUseCase {
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenUseCase refreshTokenUseCase;
     private final EmailVerifiedTokenUseCase emailUseCase;
+    private final AuthorizationRolUseCase authorizationRolUseCase;
 
     public AuthUseCaseImp(PasswordEncoder passwordEncoder, UserDomainRepositoryPort port,
             UserSecurityPort userSecurityPort, UserJwtPort userJwtPort, RefreshTokenUseCase refreshTokenUseCase,
-            EmailVerifiedTokenUseCase emailVerifiedTokenUseCase) {
+            EmailVerifiedTokenUseCase emailVerifiedTokenUseCase, AuthorizationRolUseCase authorizationRolUseCase) {
         this.passwordEncoder = passwordEncoder;
         this.userPort = port;
         this.userSecurityPort = userSecurityPort;
         this.jwtPort = userJwtPort;
         this.refreshTokenUseCase = refreshTokenUseCase;
         this.emailUseCase = emailVerifiedTokenUseCase;
+        this.authorizationRolUseCase = authorizationRolUseCase;
     }
 
     @Override
@@ -71,17 +75,20 @@ public class AuthUseCaseImp implements AuthUseCase {
 
                     return userPort.save(userModel)
                             .flatMap(saved -> {
+
+                                AssigmentUserRolCommand assignmentCommand = new AssigmentUserRolCommand(saved.getId(),
+                                        "USER");
+
                                 SendEmailCommand emailCommand = new SendEmailCommand(saved.getId(), saved.getEmail());
 
-                                return emailUseCase.sendEmail(emailCommand)
-                                        .map(emailMessage -> {
-                                            return new RegisterUserCommandResult(
-                                                    saved.getId(),
-                                                    saved.getUsername(),
-                                                    emailMessage.message());
-                                        });
-
+                                return authorizationRolUseCase.assigmentRolUser(assignmentCommand)
+                                        .then(emailUseCase.sendEmail(emailCommand))
+                                        .map(emailMessage -> new RegisterUserCommandResult(
+                                                saved.getId(),
+                                                saved.getUsername(),
+                                                emailMessage.message()));
                             });
+
                 });
     }
 
@@ -95,7 +102,7 @@ public class AuthUseCaseImp implements AuthUseCase {
                     }
 
                     if (UserAuthStatus.valueOf(user.authStatus()) != UserAuthStatus.ACTIVE) {
-                        return Mono.error(new AuthStatusEmailVerified());
+                        return Mono.error(new AuthStatusEmailVerifiedException());
                     }
 
                     return jwtPort.generateAccessToken(user)
