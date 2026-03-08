@@ -14,6 +14,7 @@ import com.example.webflux.domain.refreshToken.exceptions.RefreshTokenExpiredExc
 import com.example.webflux.domain.refreshToken.exceptions.RefreshTokenRevokedException;
 import com.example.webflux.infrastructure.zGlobalExceptionInfraestructure.helpers.ApiError;
 import com.example.webflux.infrastructure.zGlobalExceptionInfraestructure.helpers.StaticError;
+import com.nimbusds.jose.JOSEException;
 
 @RestControllerAdvice
 public class AuthGlobalAdviceExceptions {
@@ -62,6 +63,14 @@ public class AuthGlobalAdviceExceptions {
     @ExceptionHandler(RefreshTokenExpiredException.class)
     public ResponseEntity<ApiError> handleRefreshToken(
             RefreshTokenExpiredException ex,
+            ServerWebExchange exchange) {
+        return StaticError.buildError(HttpStatus.FORBIDDEN, ex.getMessage(), exchange);
+    }
+
+    // === JWT EXCEPTIONS ===
+    @ExceptionHandler(JOSEException.class)
+    public ResponseEntity<ApiError> handleJoseExceptionJwt(
+            JOSEException ex,
             ServerWebExchange exchange) {
         return StaticError.buildError(HttpStatus.FORBIDDEN, ex.getMessage(), exchange);
     }

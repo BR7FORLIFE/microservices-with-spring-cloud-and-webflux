@@ -14,17 +14,16 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 @RestControllerAdvice
 public class HttpGlobalAdviceExceptions {
 
-    //Excepcion cuando el cliente envia mas parametros de los que se les solicita
+    // Excepcion cuando el cliente envia mas parametros de los que se les solicita
     @ExceptionHandler(ServerWebInputException.class)
     public ResponseEntity<ApiError> handleMultipleFields(
             ServerWebInputException e,
             ServerWebExchange exchange) {
         if (e.getCause() instanceof UnrecognizedPropertyException ex) {
-            return StaticError.buildError(HttpStatus.TOO_MANY_REQUESTS,
-                    "Propiedad no permitida: " + ex.getPropertyName(),
+            return StaticError.buildError(HttpStatus.BAD_REQUEST,
+                    "Not allowed property: " + ex.getPropertyName(),
                     exchange);
         }
-
-        return StaticError.buildError(HttpStatus.TOO_MANY_REQUESTS, "Datos invalidos!", exchange);
+        return StaticError.buildError(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid data!", exchange);
     }
 }
