@@ -5,7 +5,7 @@ import com.example.webflux.application.zGlobalApplicationExceptions.ApplicationE
 public class UserAlreadyRegisterException extends ApplicationException {
 
     public UserAlreadyRegisterException() {
-        super("El usuario se encuentra registrado!");
+        super("user already register!");
     }
 
     

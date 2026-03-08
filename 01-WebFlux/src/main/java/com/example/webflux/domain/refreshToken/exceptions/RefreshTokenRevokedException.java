@@ -4,6 +4,6 @@ import com.example.webflux.domain.zGlobalDomainExceptions.DomainException;
 
 public class RefreshTokenRevokedException extends DomainException {
     public RefreshTokenRevokedException() {
-        super("Refresh token has revocked!");
+        super("Refresh token has revoked!");
     }
 }
