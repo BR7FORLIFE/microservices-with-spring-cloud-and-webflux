@@ -21,9 +21,14 @@ public final class RefreshTokenModel {
         this.createAt = createAt;
     }
 
-    public static RefreshTokenModel create(UUID id, UUID userId, String tokenHash, Instant expiresAt,
+    public static RefreshTokenModel createNew(UUID id, UUID userId, String tokenHash, Instant expiresAt,
             Instant createAt) {
         return new RefreshTokenModel(id, userId, tokenHash, expiresAt, false, createAt);
+    }
+
+    public static RefreshTokenModel createDraft(UUID userId, String tokenHash, Instant expiresAt,
+            Instant createAt) {
+        return new RefreshTokenModel(UUID.randomUUID(), userId, tokenHash, expiresAt, false, createAt);
     }
 
     public RefreshTokenModel revoke() {

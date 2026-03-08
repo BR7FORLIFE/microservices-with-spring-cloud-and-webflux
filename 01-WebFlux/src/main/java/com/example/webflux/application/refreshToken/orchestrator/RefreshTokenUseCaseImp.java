@@ -40,13 +40,12 @@ public class RefreshTokenUseCaseImp implements RefreshTokenUseCase {
     public Mono<String> createRefreshToken(UUID userId) {
         return repository.revokeAllByUserId(userId)
                 .then(Mono.fromCallable(() -> {
-                    UUID jti = UUID.randomUUID(); // <-- id unico de refreshToken Model
                     String raw = hashConfig.randomBase64(32); // <-- Raw que devolvemos en el mono Base64 con alta
                                                               // entropia
                     String hash = hashConfig.sha256(raw); // <-- Obligatorio hasearlo para seguridad por si roban la DB
                     Instant now = Instant.now();
                     Instant expiredAt = now.plus(ttlDuration);
-                    RefreshTokenModel refreshtokenModel = RefreshTokenModel.create(jti, userId, hash,
+                    RefreshTokenModel refreshtokenModel = RefreshTokenModel.createDraft(userId, hash,
                             expiredAt, expiredAt);
                     return Tuples.of(refreshtokenModel, raw);
                 }).flatMap(tuple -> {
