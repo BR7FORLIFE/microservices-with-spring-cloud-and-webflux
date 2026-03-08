@@ -6,7 +6,7 @@ import com.example.webflux.infrastructure.refreshToken.persistence.RefreshTokenE
 public class RefreshTokenMapper {
 
     public static RefreshTokenModel toDomain(RefreshTokenEntity refreshTokenEntity) {
-        return RefreshTokenModel.create(refreshTokenEntity.getId(), refreshTokenEntity.getUserId(),
+        return RefreshTokenModel.createNew(refreshTokenEntity.getId(), refreshTokenEntity.getUserId(),
                 refreshTokenEntity.getTokenHash(), refreshTokenEntity.getExpiredAt(), refreshTokenEntity.getCreateAt());
     }
 
@@ -24,7 +24,7 @@ public class RefreshTokenMapper {
          * manualmente y debe ser generado por la base de datos; de lo contrario, Spring
          * Data intentará actualizar una fila inexistente y la operación fallará.
          */
-        entity.setId(null);
+        entity.setId(refreshTokenModel.getId());
         entity.setUserId(refreshTokenModel.getUserId());
         entity.setTokenHash(refreshTokenModel.getTokenHash());
         entity.setExpiredAt(refreshTokenModel.getExpiresAt());

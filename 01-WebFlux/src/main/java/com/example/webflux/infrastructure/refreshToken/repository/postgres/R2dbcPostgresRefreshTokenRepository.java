@@ -19,4 +19,6 @@ public interface R2dbcPostgresRefreshTokenRepository extends ReactiveCrudReposit
     Mono<RefreshTokenEntity> findByTokenHash(String token);
 
     Flux<RefreshTokenEntity> findByUserIdAndRevokedIsFalse(UUID userId);
+
+    Mono<Boolean> existsById(UUID id);
 }

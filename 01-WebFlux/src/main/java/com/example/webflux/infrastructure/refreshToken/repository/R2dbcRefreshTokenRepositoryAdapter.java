@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.example.webflux.domain.refreshToken.models.RefreshTokenModel;
 import com.example.webflux.domain.refreshToken.ports.RefreshTokenDomainRepositoryPort;
 import com.example.webflux.infrastructure.refreshToken.mapper.RefreshTokenMapper;
+import com.example.webflux.infrastructure.refreshToken.persistence.RefreshTokenEntity;
 import com.example.webflux.infrastructure.refreshToken.repository.postgres.R2dbcPostgresRefreshTokenRepository;
 
 import reactor.core.publisher.Flux;
@@ -44,9 +45,17 @@ public class R2dbcRefreshTokenRepositoryAdapter implements RefreshTokenDomainRep
 
     @Override
     public Mono<RefreshTokenModel> save(RefreshTokenModel tokenModel) {
-        return this.refreshTokenRepository
-                .save(RefreshTokenMapper.toEntity(tokenModel))
-                .map(RefreshTokenMapper::toDomain);
+        return this.refreshTokenRepository.existsById(tokenModel.getId())
+                .flatMap(exists -> {
+                    RefreshTokenEntity entity = RefreshTokenMapper.toEntity(tokenModel);
+
+                    if (exists) {
+                        entity.markNotNew();
+                    }
+
+                    return this.refreshTokenRepository.save(entity)
+                            .map(RefreshTokenMapper::toDomain);
+                });
     }
 
     @Override
