@@ -23,7 +23,7 @@ public class SecurityConfig {
 
     private final JwtService jwtService;
 
-    private final String[] PUBLIC_PATHS = { "/api/auth/**", "/api/email/**" };
+    private final String[] PUBLIC_PATHS = { "/auth/**", "/email/**" };
 
     public SecurityConfig(JwtService jwtService) {
         this.jwtService = jwtService;

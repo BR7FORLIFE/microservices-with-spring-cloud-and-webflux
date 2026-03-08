@@ -1,6 +1,11 @@
 spring:
+  webflux:
+    base-path: /api
+
   jackson:
     property-naming-strategy: SNAKE_CASE
+    deserialization:
+      fail-on-unknown-properties: true
 
   profiles:
     active:
