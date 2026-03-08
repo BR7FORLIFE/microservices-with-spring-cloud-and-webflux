@@ -26,7 +26,7 @@ import jakarta.validation.Valid;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthController {
 
     private final RefreshTokenUseCase refreshTokenUseCase;
@@ -60,7 +60,7 @@ public class AuthController {
                     ResponseCookie cookie = ResponseCookie
                             .from("refresh_token", token.refreshRaw())
                             .httpOnly(true)
-                            .secure(false) //IMPORTANTE QUITARLO EL VALOR FALSE EN PRODUCCION
+                            .secure(true) // IMPORTANTE QUITARLO EL VALOR FALSE EN PRODUCCION
                             .path("/api/auth")
                             .maxAge(30 * 24 * 60 * 60)
                             .sameSite(SameSite.Strict.toString())
@@ -70,7 +70,7 @@ public class AuthController {
 
                     LoginUserResponseDto access_response = new LoginUserResponseDto(token.accessToken());
                     return ResponseEntity.ok().body(access_response);
-                 });
+                });
     }
 
     @PostMapping("/refresh")
@@ -82,10 +82,20 @@ public class AuthController {
         String raw = cookie.getValue();
         return refreshTokenUseCase.validateAndRotate(raw)
                 .flatMap(newRefreshToken -> {
+                    ResponseCookie newCookie = ResponseCookie
+                            .from("refresh_token", newRefreshToken)
+                            .httpOnly(true)
+                            .secure(true)
+                            .path("/api/auth")
+                            .maxAge(30 * 24 * 60 * 60)
+                            .sameSite(SameSite.Strict.toString())
+                            .build();
+
+                    response.addCookie(newCookie);
+
                     RefreshTokenDtoResponse refreshResponse = new RefreshTokenDtoResponse(newRefreshToken);
                     return Mono.just(ResponseEntity.ok().body(refreshResponse));
-                })
-                .onErrorResume(e -> Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()));
+                });
 
     }
 

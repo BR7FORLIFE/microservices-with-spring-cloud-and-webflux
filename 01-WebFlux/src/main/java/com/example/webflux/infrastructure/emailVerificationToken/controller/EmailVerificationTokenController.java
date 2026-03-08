@@ -13,7 +13,7 @@ import com.example.webflux.application.emailVerificationToken.usecases.EmailVeri
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/email")
+@RequestMapping("/email")
 public class EmailVerificationTokenController {
 
     private final EmailVerifiedTokenUseCase emailVerifiedTokenUseCase;
