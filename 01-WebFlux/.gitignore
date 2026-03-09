@@ -36,7 +36,11 @@ build/
 python-user-registers/app
 
 ### enviroments variables
-.env
+.env.local
+.env.prod
 microservices-with-spring-cloud-and-webflux/01-WebFlux/.env
 env
 .env.sh
+
+### config
+src/main/resources/application-prod.yml
