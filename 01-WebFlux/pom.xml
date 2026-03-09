@@ -126,6 +126,12 @@
     		<artifactId>resend-java</artifactId>
     		<version>LATEST</version>
 		</dependency>
+
+		<dependency>
+    		<groupId>org.postgresql</groupId>
+    		<artifactId>postgresql</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
